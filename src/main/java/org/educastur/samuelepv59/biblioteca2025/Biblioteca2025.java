@@ -245,18 +245,14 @@ public class Biblioteca2025 {
         usuarios.add(u); 
     }
     private void borrarUsuario() {
-        Scanner sc=new Scanner(System.in);
-        System.out.println("Introduce el nombre del usuario que deseas eliminar");
-        String nombre = sc.nextLine();
-        int pos = buscaLibro(nombre);
-        if(pos==-1){
+        int posNombre = buscaDni(solicitaDni());
+        if(posNombre==-1){
             System.out.println("El usuario que deseas eliminar no esta registrado en la agenda");
         } else {
-            libros.remove(pos);
-            System.out.println("El usuario "+nombre+ " ha sido eliminado con exito");
+            usuarios.remove(posNombre);
+            System.out.println("El usuario "+usuarios.get(posNombre).getNombre()+ " ha sido eliminado con exito");
         }
     }
-    
     
     private void modificarUsuario() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
