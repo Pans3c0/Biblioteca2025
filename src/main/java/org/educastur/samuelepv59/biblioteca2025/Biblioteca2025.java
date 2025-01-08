@@ -19,6 +19,10 @@ public class Biblioteca2025 {
     private ArrayList<Usuario>usuarios;
     private ArrayList<Prestamo>prestamos;
     
+    
+    private boolean estatus = true;
+    
+    
     public Biblioteca2025(){
         this.libros = new ArrayList();
         this.usuarios = new ArrayList();
@@ -29,6 +33,7 @@ public class Biblioteca2025 {
         Biblioteca2025 b = new Biblioteca2025();
         b.cargaDatos();
         b.menu();
+        
     }   
 
 //<editor-fold defaultstate="collapsed" desc="MENUS">
@@ -286,14 +291,20 @@ public class Biblioteca2025 {
     private void borrarPrestamo() {
         Scanner sc=new Scanner(System.in);
         int pos = buscaDniPrest(solicitaDni());
-        int posL=buscaLibroPrest(solicitaDni());
-        if(posL==-1){
-            System.out.println("El libro introducido no se encuentra prestado");
+        if (estatus == false){
+            estatus = true;
+            return;
         } else {
-            libros.remove(pos);
-            System.out.println("Se ha eliminado el prestamo con exito");
-            libros.get(posL).setEjemplares(libros.get(posL).getEjemplares()+1);
-        }  
+            int posL=buscaLibroPrest(solicitaIsbn());
+            if(posL==-1){
+                System.out.println("El libro introducido no se encuentra prestado");
+            } else {
+                libros.remove(pos);
+                System.out.println("Se ha eliminado el prestamo con exito");
+                libros.get(posL).setEjemplares(libros.get(posL).getEjemplares()+1);
+            }
+        }
+          
     }
     
     private void modificarPrestamo() {
@@ -387,6 +398,7 @@ private void cargaDatos() {
                 return; // Salimos del método después de registrar al usuario
             case "NO":
                 System.out.println("No se realizará ninguna acción.");
+                estatus = false;
                 return; // Salimos del método sin hacer nada
             default:
                 System.out.println("Por favor, introduzca una opción válida (SI/NO).");
