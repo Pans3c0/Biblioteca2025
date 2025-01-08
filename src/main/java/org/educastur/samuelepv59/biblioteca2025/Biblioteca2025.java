@@ -6,6 +6,9 @@ package org.educastur.samuelepv59.biblioteca2025;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
 import java.util.Scanner;
 
 /**
@@ -45,6 +48,7 @@ public class Biblioteca2025 {
             System.out.println("\t\t\t\t1 - Libros");
             System.out.println("\t\t\t\t2 - Usuarios");
             System.out.println("\t\t\t\t3 - Prestamos");
+            System.out.println("\t\t\t\t4 - Filtros");
             System.out.println("\n\n\t\t\t\t0 - SALIR\n\n");
             opcion=sc.nextInt();
             switch (opcion){
@@ -61,6 +65,10 @@ public class Biblioteca2025 {
                 }
                 case 3:{
                     menuPrestamos();
+                    break;
+                }
+                case 4:{
+                    menuFiltros();
                     break;
                 }
             }
@@ -175,7 +183,47 @@ public class Biblioteca2025 {
                 System.out.println("\n\nOpcion no valida. Intente de nuevo.\n");
         }
     } while (opcion != 0);
+    
+    
+     
 }
+    
+    public void menuFiltros() {
+        Scanner sc = new Scanner(System.in);
+        int opcion;
+
+        do {
+            System.out.println("\nSubmenu: Filtros");
+            System.out.println("\t\t\t1. Prestamos por libro");
+            System.out.println("\t\t\t2. Borrar Un Prestamo");
+            System.out.println("\t\t\t3. Modficar Un Prestamo");
+            System.out.println("\t\t\t4. Listar Un Prestamo");
+            System.out.println("\n\n\t\t\t0. Volver al menu principal");
+            System.out.print("Seleccione una opcion: ");
+            opcion = sc.nextInt();
+            sc.nextLine(); 
+
+            switch (opcion) {
+                case 1:
+                    libroMayor();
+                    break;
+                case 2:
+                    borrarPrestamo();
+                    break;
+                case 3:
+                    modificarPrestamo();
+                    break;
+                case 4:
+                    listarPrestamos();
+                    break;
+                case 0:
+                    System.out.println("\n\nVolviendo al menu principal...\n");
+                    break;
+                default:
+                    System.out.println("\n\nOpcion no valida. Intente de nuevo.\n");
+            }
+        } while (opcion != 0);
+    }
 //</editor-fold>
     
 //<editor-fold defaultstate="collapsed" desc="GESTION LIBROS">
@@ -320,6 +368,10 @@ public class Biblioteca2025 {
     
 //<editor-fold defaultstate="collapsed" desc="METODOS AUXILIARES">
 private void cargaDatos() {
+        //random
+        Random rand = new Random();
+        
+        
         // Libros
         libros.add(new Libro("1-01", "El Señor de los Anillos", "J.R.R. Tolkien", "Fantasía", 5));
         libros.add(new Libro("1-02", "Cien años de soledad", "Gabriel García Márquez", "Realismo mágico", 3));
@@ -327,6 +379,20 @@ private void cargaDatos() {
         libros.add(new Libro("1-04", "La piedra filosofal", "J.K.Rowling", "Fantasía", 2));
         libros.add(new Libro("1-05", "Como salir del armario", "LGBTQI+", "Fantasías sexuales", 5));
         libros.add(new Libro("1-06", "Las claves del amor", "Arturito", "Psicologia Amorosa", 5));
+        libros.add(new Libro("1-07", "Don Quijote de la Mancha", "Miguel de Cervantes", "Clásico", 4));
+        libros.add(new Libro("1-08", "Crimen y castigo", "Fiódor Dostoievski", "Novela psicológica", 3));
+        libros.add(new Libro("1-09", "Orgullo y prejuicio", "Jane Austen", "Romance", 4));
+        libros.add(new Libro("1-10", "El principito", "Antoine de Saint-Exupéry", "Fábula", 6));
+        libros.add(new Libro("1-11", "Rayuela", "Julio Cortázar", "Novela experimental", 2));
+        libros.add(new Libro("1-12", "El código Da Vinci", "Dan Brown", "Thriller", 5));
+        libros.add(new Libro("1-13", "Crónica de una muerte anunciada", "Gabriel García Márquez", "Novela", 3));
+        libros.add(new Libro("1-14", "El nombre del viento", "Patrick Rothfuss", "Fantasía épica", 4));
+        libros.add(new Libro("1-15", "La sombra del viento", "Carlos Ruiz Zafón", "Misterio", 3));
+        libros.add(new Libro("1-16", "Memorias de una geisha", "Arthur Golden", "Novela histórica", 2));
+        libros.add(new Libro("1-17", "El alquimista", "Paulo Coelho", "Ficción filosófica", 5));
+        libros.add(new Libro("1-18", "Los juegos del hambre", "Suzanne Collins", "Distopía", 4));
+        libros.add(new Libro("1-19", "El perfume", "Patrick Süskind", "Novela histórica", 2));
+        libros.add(new Libro("1-20", "Crónicas marcianas", "Ray Bradbury", "Ciencia ficción", 3));
         
 
         // Usuarios
@@ -335,12 +401,33 @@ private void cargaDatos() {
         usuarios.add(new Usuario("33333333C", "Lisboa", "lisboa@email.com", "456789123"));
         usuarios.add(new Usuario("44444444D", "Roces", "roces@email.com", "321987654"));
         usuarios.add(new Usuario("55555555E", "Pacheco", "pacheco@email.com", "6891111111"));
+        usuarios.add(new Usuario("66666666F", "Carmen", "carmen@email.com", "611222222"));
+        usuarios.add(new Usuario("77777777G", "Roberto", "roberto@email.com", "622333333"));
+        usuarios.add(new Usuario("88888888H", "Elena", "elena@email.com", "633444444"));
+        usuarios.add(new Usuario("99999999I", "Miguel", "miguel@email.com", "644555555"));
+        usuarios.add(new Usuario("10101010J", "Laura", "laura@email.com", "655666666"));
+        usuarios.add(new Usuario("12121212K", "Pablo", "pablo@email.com", "666777777"));
+        usuarios.add(new Usuario("13131313L", "Sofía", "sofia@email.com", "677888888"));
+        usuarios.add(new Usuario("14141414M", "Javier", "javier@email.com", "688999999"));
+        usuarios.add(new Usuario("15151515N", "Ana", "ana@email.com", "699000000"));
+        usuarios.add(new Usuario("16161616O", "Diego", "diego@email.com", "600111111"));
 
+        
+        //prestamos
         LocalDate hoy = LocalDate.now();
         prestamos.add(new Prestamo(libros.get(3),usuarios.get(4),hoy,hoy.plusDays(15)));
         prestamos.add(new Prestamo(libros.get(4),usuarios.get(0),hoy,hoy.plusDays(15)));
         prestamos.add(new Prestamo(libros.get(0),usuarios.get(1),hoy,hoy.plusDays(15)));
         prestamos.add(new Prestamo(libros.get(5),usuarios.get(2),hoy,hoy.plusDays(15)));   
+        
+        for (int i = 0; i < 21; i++) { // 21 para llegar a un total de 25 préstamos
+        Libro libroAleatorio = libros.get(rand.nextInt(libros.size()));
+        Usuario usuarioAleatorio = usuarios.get(rand.nextInt(usuarios.size()));
+        LocalDate fechaPrestamo = hoy.minusDays(rand.nextInt(30));
+        LocalDate fechaDevolucion = fechaPrestamo.plusDays(15);
+        
+        prestamos.add(new Prestamo(libroAleatorio, usuarioAleatorio, fechaPrestamo, fechaDevolucion));
+    }
     }    
     public int buscaDni (String dni){
         int pos=-1;
@@ -430,6 +517,34 @@ private void cargaDatos() {
     }
     
     
+    public Map<Libro, Integer> contarLibros(){
+        Map<Libro, Integer> prestamosPorLibro = new HashMap<>();
+
+        for (Prestamo prestamo : prestamos) {
+            Libro libro = prestamo.getLibroPrest();
+            prestamosPorLibro.put(libro, prestamosPorLibro.getOrDefault(libro, 0) + 1);
+        }
+        return prestamosPorLibro;
+    }
+    
 //</editor-fold>
 
+    
+//<editor-fold defaultstate="collapsed" desc="Filtros">
+    
+    
+    public void numeroPrestamos(){
+        Map<Libro, Integer> prestamosPorLibro = contarLibros();
+        System.out.println("Número de préstamos por libro:");
+        for (Map.Entry<Libro, Integer> entry : prestamosPorLibro.entrySet()) {
+            Libro libro = entry.getKey();
+            int numeroPrestamos = entry.getValue();
+            if (numeroPrestamos > 0){
+                System.out.println(libro.getTitulo() + " - ISBN: " + libro.getIsbn() + ": " + numeroPrestamos + " préstamo(s)");
+            }
+        }
+    }
+//</editor-fold>
+
+   
 }
