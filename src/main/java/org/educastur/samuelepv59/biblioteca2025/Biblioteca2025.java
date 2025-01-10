@@ -15,7 +15,7 @@ import java.util.Random;
 import java.util.Scanner;
 
 /**
- *primer commit
+ *
  * @author alu19d
  */
 public class Biblioteca2025 {
@@ -195,10 +195,10 @@ public class Biblioteca2025 {
 
         do {
             System.out.println("\nSubmenu: Filtros");
-            System.out.println("\t\t\t1. Prestamos por libro");
-            System.out.println("\t\t\t2. Libros Tendencia");
-            System.out.println("\t\t\t3. Modficar Un Prestamo");
-            System.out.println("\t\t\t4. Listar Un Prestamo");
+            System.out.println("\t\t\t1. PlibroMasPrestado");
+            System.out.println("\t\t\t2. usuarioMasActivo");
+            System.out.println("\t\t\t3. librosActivos");
+            System.out.println("\t\t\t4. prestamosActivos");
             System.out.println("\n\n\t\t\t0. Volver al menu principal");
             System.out.print("Seleccione una opcion: ");
             opcion = sc.nextInt();
@@ -206,16 +206,16 @@ public class Biblioteca2025 {
 
             switch (opcion) {
                 case 1:
-                    numeroPrestamos();
+                    libroMasPrestado();
                     break;
                 case 2:
-                    mayorFiltroPrestamos();
+                    usuarioMasActivo();
                     break;
                 case 3:
-                    prorrogarPrestamo();
+                    librosActivos();
                     break;
                 case 4:
-                    listarPrestamos();
+                    prestamosActivos();
                     break;
                 case 0:
                     System.out.println("\n\nVolviendo al menu principal...\n");
@@ -247,26 +247,41 @@ public class Biblioteca2025 {
         Libro l=new Libro(isbn,titulo,autor,genero,ejemplares);
         libros.add(l);    
     }
-// revisar
+
     private void borrarLibro() {
         Scanner sc=new Scanner(System.in);
         System.out.println("Introduce el isbn del libro que deseas eliminar");
-        String isbn = sc.nextLine();
-        int pos = buscaLibro(isbn);
-        if(pos==-1){
+        Libro libroEncontrado = buscaLibro();
+        if(libroEncontrado == null){;
             System.out.println("El libro que deseas eliminar no se encuentra en la biblioteca");
         } else {
-            int n = libros.get(pos).getEjemplares();
-            // creo un if para este metodo en caso de que llegue a 0 se quiera borrar toda la informacion sobre el libro
-            if (n > 0 ) {
-                n--;
-                libros.get(pos).setEjemplares(n);
-                System.out.println("Te quedan "+n+" ejemplares de "+isbn);
-            } 
+            libros.remove(libroEncontrado);
+            System.out.println("El libro fue eliminado con exito");
         }
     }
     private void modificarLibro() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        Scanner sc=new Scanner(System.in);
+        Libro libroEncontrado = buscaLibro();
+        if (libroEncontrado == null){
+            return;
+        }
+        System.out.println("Introduce la cantidad de ejemplares que deseas añadir (+) o quitar (-) : ");
+        String modificacion = sc.nextLine();// Extraer el número como texto
+        int numero = Integer.parseInt(modificacion.substring(1));
+        
+        if (modificacion.charAt(0) == '+' ) {
+            
+            libroEncontrado.setEjemplares(libroEncontrado.getEjemplares()+numero);
+            
+        }
+        if(modificacion.charAt(0) == '-'){
+            libroEncontrado.setEjemplares(libroEncontrado.getEjemplares()-numero);
+            if (libroEncontrado.getEjemplares()<0){
+                System.out.println("No puedes borrar mas libros de los que tienes");
+                libroEncontrado.setEjemplares(libroEncontrado.getEjemplares()+numero);
+            }
+        }
+        System.out.println("Ahora "+libroEncontrado.getTitulo()+" tiene "+libroEncontrado.getEjemplares()+" ejemplares");
     }
     private void listadoLibro() {
         int n = 0;
@@ -296,12 +311,12 @@ public class Biblioteca2025 {
         usuarios.add(u); 
     }
     private void borrarUsuario() {
-        int posNombre = buscaDni(solicitaDni());
-        if(posNombre==-1){
+        Usuario usuarioEncontrado = buscaUsuario();
+        if(usuarioEncontrado==null){
             System.out.println("El usuario que deseas dar de baja no esta registrado en la agenda");
         } else {
-            usuarios.remove(posNombre);
-            System.out.println("El usuario "+usuarios.get(posNombre).getNombre()+ " ha sido dado de baja con exito");
+            usuarios.remove(usuarioEncontrado);
+            System.out.println("El usuario "+usuarioEncontrado.getNombre()+ " ha sido dado de baja con exito");
         }
     }
     
@@ -320,19 +335,26 @@ public class Biblioteca2025 {
     private void nuevoPrestamo() {
         Scanner sc=new Scanner(System.in);
         System.out.println("Nuevo Prestamo:");
-        int posNombre = buscaDni(solicitaDni());
-        int posLibro = buscaLibro(solicitaIsbn());
-        if (posLibro == -1){
-            System.out.println("No se encuentra el libro indicado");
-        } else if (libros.get(posLibro).getEjemplares()> 0) {
-            LocalDate hoy = LocalDate.now();
-            Prestamo p=new Prestamo(libros.get(posLibro),usuarios.get(posNombre),hoy,hoy.plusDays(15));
-            prestamos.add(p);
-            libros.get(posLibro).setEjemplares(libros.get(posLibro).getEjemplares()-1);              
-        } else {
-            System.out.println("Ya no quedan ejemplares de este libro actualmente");
+        Usuario usuarioEncontrado = buscaUsuario();
+        boolean status = prestamoActual(usuarioEncontrado);
+        if (status == true){
+            System.out.println("El usuario\n"+usuarioEncontrado.toString()+"\nya tiene al menos un prestamo activo. ");
+            return;
         }
-    }
+        Libro libroEncontrado = buscaLibro();
+        if (libroEncontrado == null){
+            System.out.println("No se encuentra el libro indicado");
+        } else if (libroEncontrado.getEjemplares() > 0){
+            LocalDate hoy = LocalDate.now();
+            Prestamo p=new Prestamo(libroEncontrado,usuarioEncontrado,hoy,hoy.plusDays(15));
+            prestamos.add(p);
+            libroEncontrado.setEjemplares(libroEncontrado.getEjemplares()-1); 
+            } else if (libroEncontrado.getEjemplares() <= 0){
+                System.out.println("No quedan ejemplares activos en el sistema.");
+                return;
+            }
+        } 
+    
     
     
         private void devolverPrestamo() {
@@ -440,10 +462,11 @@ public class Biblioteca2025 {
         }    
 /**
  * Pide Dni y realiza todas las acciones necesarias
- * @return dni
+ * @return Usuario objeto
  * @default null
  */
-    public String solicitaDni(){
+    public Usuario buscaUsuario(){
+        Usuario usuarioEncontrado;
         Scanner sc=new Scanner(System.in);
         System.out.println("Introduce el Dni del usuario:");
         String dni=sc.nextLine();
@@ -451,8 +474,10 @@ public class Biblioteca2025 {
         if (posU == -1){
             usuarioNoEncontrado();
             return null;
-        } 
-        return dni;
+        } else{
+            usuarioEncontrado = usuarios.get(posU);
+            return usuarioEncontrado;
+        }
     }
 /**
 * Busca usuario con dni
@@ -476,7 +501,7 @@ public class Biblioteca2025 {
  * @return libro.get(i)
  * @default -1
  */
-    public int buscaLibro (String isbn){
+    public int buscaIsbn (String isbn){
         int pos=-1;
         for (int i = 0; i < libros.size(); i++) {
             if(libros.get(i).getIsbn().equalsIgnoreCase(isbn)){
@@ -540,19 +565,23 @@ public class Biblioteca2025 {
 }
 /**
  * Pide Isbn y realiza todas las acciones necesarias
- * @return 
+ * @return Libro Objeto
  * @default null
  */
-    public String solicitaIsbn(){
+    public Libro buscaLibro(){
+        Libro libroEncontrado;
         Scanner sc=new Scanner(System.in);
         System.out.println("Introduce el Isbn del libro:");
         String isbn=sc.nextLine();
-        int posL = buscaLibro(isbn);
+        int posL = buscaIsbn(isbn);
         if (posL == -1){
             isbnNoEncontrado();
             return null;
-        } 
-        return isbn;
+        } else {
+            libroEncontrado = libros.get(posL);
+            return libroEncontrado;
+        }
+        
     } 
 /**
  * En este metodo pedimos Dni e Isbn para buscar en prestamos
@@ -562,17 +591,17 @@ public class Biblioteca2025 {
     public Prestamo buscarPrestamo(){
         Scanner sc=new Scanner(System.in);
         Prestamo prestamoEncontrado = null;
-        String dni = solicitaDni();
-        if (dni == null) {
+        Usuario usuarioEncontrado = buscaUsuario();
+        if (usuarioEncontrado == null) {
             return prestamoEncontrado;
         }
-        String isbn = solicitaIsbn();
+        Libro isbn = buscaLibro();
         
         
         
         for (Prestamo prestamo : prestamos) {
-        if (prestamo.getUsuarioPrest().getDni().equals(dni) && 
-            prestamo.getLibroPrest().getIsbn().equals(isbn)) {
+        if (prestamo.getUsuarioPrest().equals(usuarioEncontrado) && 
+            prestamo.getLibroPrest().equals(isbn)) {
             prestamoEncontrado = prestamo;
             break;
             } 
@@ -627,6 +656,134 @@ public class Biblioteca2025 {
             int numeroPrestamos = entry.getValue();
             System.out.println(numeroPrestamos + "prestamo(s): " + libro.getTitulo()+" "+ libro.getIsbn());
         }
-    }            
+    } 
+    public void prestamosActivos(){
+        Scanner sc=new Scanner(System.in);
+        int contador = 0;
+        LocalDate hoy = LocalDate.now();
+        Usuario usuarioEncontrado = buscaUsuario();
+        if (usuarioEncontrado==null){
+            return;
+        }
+        for (Prestamo prestamo : prestamos) {
+            if (usuarioEncontrado == prestamo.getUsuarioPrest() && prestamo.getFechaDev().isAfter(hoy)){    
+            System.out.println(prestamo);
+            contador++;
+        }    
+    }
+        if (contador == 0){
+        System.out.println("El usuario "+usuarioEncontrado.getNombre()+" no tiene ningun prestamo activo.");
+    } 
+        
+    }
+    public boolean prestamoActual(Usuario usuarioEncontrado){
+        Scanner sc=new Scanner(System.in);
+        boolean status = false;
+        LocalDate hoy = LocalDate.now();
+        if (usuarioEncontrado==null){
+            return status;
+        }
+        for (Prestamo prestamo : prestamos) {
+            if (usuarioEncontrado == prestamo.getUsuarioPrest() && prestamo.getFechaDev().isAfter(hoy)){    
+            return true;   
+        }    
+    }
+        return status;
+    }
+    
+    public void librosActivos(){
+        int contador = 0;
+        Scanner sc=new Scanner(System.in);
+        LocalDate hoy = LocalDate.now();
+        Libro libroEncontrado = buscaLibro();
+        if (libroEncontrado==null){
+            
+            return;
+            
+        }
+        for (Prestamo prestamo : prestamos) {
+            if (libroEncontrado == prestamo.getLibroPrest() && prestamo.getFechaDev().isAfter(hoy)){    
+            System.out.println(prestamo);
+            contador++;
+        }
+        
+    }    
+      if (contador == 0 ){
+            System.out.println("El libro "+libroEncontrado.getTitulo()+" no se encuentra activo.");
+        }  
+    }
+    
+    public void libroMasPrestado() {
+    if (prestamos.isEmpty()) {
+        System.out.println("No hay préstamos registrados.");
+        return;
+    }
+
+    // Variables para almacenar el libro más prestado y el número máximo de préstamos
+    Libro libroMasPrestado = null;
+    int maxPrestamos = 0;
+
+    for (Libro libro : libros) { // Recorrer la lista de libros
+        int contador = 0;
+
+        // Contar cuántos préstamos hay para este libro
+        for (Prestamo prestamo : prestamos) {
+            if (prestamo.getLibroPrest().equals(libro)) {
+                contador++;
+            }
+        }
+
+        // Verificar si este libro tiene más préstamos que el actual máximo
+        if (contador > maxPrestamos) {
+            maxPrestamos = contador;
+            libroMasPrestado = libro;
+        }
+    }
+
+    // Mostrar el resultado
+    if (libroMasPrestado != null) {
+        System.out.println("El libro más prestado es: " + libroMasPrestado+".\nVeces prestado: " + maxPrestamos);
+    } else {
+        System.out.println("No se pudo determinar el libro más prestado.");
+    }
+}
+    public void usuarioMasActivo() {
+    if (prestamos.isEmpty()) {
+        System.out.println("No hay usuario registrados.");
+        return;
+    }
+
+    // Variables para almacenar el libro más prestado y el número máximo de préstamos
+    Usuario usuarioMasActivo = null;
+    int maxPrestamos = 0;
+
+    for (Usuario usuario : usuarios) { // Recorrer la lista de usuarios
+        int contador = 0;
+
+        // Contar cuántos prestamos ha realizado este usuario
+        for (Prestamo prestamo : prestamos) {
+            if (prestamo.getUsuarioPrest().equals(usuario)) {
+                contador++;
+            }
+        }
+
+        // Verificar si este usuario tiene más préstamos que el actual máximo
+        if (contador > maxPrestamos) {
+            maxPrestamos = contador;
+            usuarioMasActivo = usuario;
+        }
+    }
+
+    // Mostrar el resultado
+    if (usuarioMasActivo != null) {
+        System.out.println("El usuario más activo es: " + usuarioMasActivo+".\nVeces que ha cogido un libro: " + maxPrestamos);
+    } else {
+        System.out.println("No se pudo determinar el usuario mas activo.");
+    }
+}
+
+    public void SelfControl(){
+        
+    }
 //</editor-fold>   
 }
