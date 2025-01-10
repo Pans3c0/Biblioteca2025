@@ -157,8 +157,8 @@ public class Biblioteca2025 {
     do {
         System.out.println("\nSubmenu: Prestamos");
         System.out.println("\t\t\t1. Nuevo Prestamo");
-        System.out.println("\t\t\t2. Borrar Un Prestamo");
-        System.out.println("\t\t\t3. Modficar Un Prestamo");
+        System.out.println("\t\t\t2. Devolver Un Prestamo");
+        System.out.println("\t\t\t3. Prorrogar Un Prestamo");
         System.out.println("\t\t\t4. Listar Un Prestamo");
         System.out.println("\n\n\t\t\t0. Volver al menu principal");
         System.out.print("Seleccione una opcion: ");
@@ -173,7 +173,7 @@ public class Biblioteca2025 {
                 devolverPrestamo();
                 break;
             case 3:
-                modificarPrestamo();
+                prorrogarPrestamo();
                 break;
             case 4:
                 listarPrestamos();
@@ -212,7 +212,7 @@ public class Biblioteca2025 {
                     mayorFiltroPrestamos();
                     break;
                 case 3:
-                    modificarPrestamo();
+                    prorrogarPrestamo();
                     break;
                 case 4:
                     listarPrestamos();
@@ -247,7 +247,7 @@ public class Biblioteca2025 {
         Libro l=new Libro(isbn,titulo,autor,genero,ejemplares);
         libros.add(l);    
     }
-
+// revisar
     private void borrarLibro() {
         Scanner sc=new Scanner(System.in);
         System.out.println("Introduce el isbn del libro que deseas eliminar");
@@ -265,12 +265,9 @@ public class Biblioteca2025 {
             } 
         }
     }
-    
-
     private void modificarLibro() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
-
     private void listadoLibro() {
         int n = 0;
         for (Libro l : libros) {
@@ -337,28 +334,19 @@ public class Biblioteca2025 {
         }
     }
     
-    private void devolverPrestamo() {
-        Scanner sc=new Scanner(System.in);
-        String dni = solicitaDni();
-        if (dni == null) {
+    
+        private void devolverPrestamo() {
+        Prestamo prestamoADevolver = buscarPrestamo();
+        
+        // Si no hay prestamos a devolver cerramos metodo.
+        if (prestamoADevolver == null){
             return;
         }
-        String isbn = solicitaIsbn();
-        
-        Prestamo prestamoADevolver = null;
-        
-        for (Prestamo prestamo : prestamos) {
-        if (prestamo.getUsuarioPrest().getDni().equals(dni) && 
-            prestamo.getLibroPrest().getIsbn().equals(isbn)) {  // Asumimos que un préstamo sin fecha de devolución está activo
-            prestamoADevolver = prestamo;
-            break;
-            } 
-        } 
-        
         
         // Actualizamos la fecha del prestamo.
         prestamoADevolver.setFechaDev(LocalDate.now());
         
+        // Añadimos un ejemplar a la lista de libros.
         Libro libro = prestamoADevolver.getLibroPrest();
         libro.setEjemplares(libro.getEjemplares()+1);
         
@@ -369,9 +357,16 @@ public class Biblioteca2025 {
         
     
       
-    private void modificarPrestamo() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    private void prorrogarPrestamo() {
+        Prestamo prestamoEncontrado = buscarPrestamo();
+        if (prestamoEncontrado == null){
+            return;
+        }
+        prestamoEncontrado.setFechaDev(LocalDate.now().plusDays(15));
+        System.out.println("El prestamo se ha prorrogado con exito.\nEl libro: "+prestamoEncontrado.getLibroPrest().getTitulo()+".\nNueva fecha de devolucion: "+prestamoEncontrado.getFechaPrest());
     }
+    
+    
     private void listarPrestamos() {
         System.out.println();
         for (Prestamo p : prestamos) {
@@ -381,68 +376,90 @@ public class Biblioteca2025 {
 //</editor-fold>
     
 //<editor-fold defaultstate="collapsed" desc="METODOS AUXILIARES">
-private void cargaDatos() {
-        //random
-        Random rand = new Random();
-        
-        
-        // Libros
-        libros.add(new Libro("1-01", "El Señor de los Anillos", "J.R.R. Tolkien", "Fantasía", 5));
-        libros.add(new Libro("1-02", "Cien años de soledad", "Gabriel García Márquez", "Realismo mágico", 3));
-        libros.add(new Libro("1-03", "1984", "George Orwell", "Ciencia ficción", 2));
-        libros.add(new Libro("1-04", "La piedra filosofal", "J.K.Rowling", "Fantasía", 2));
-        libros.add(new Libro("1-05", "Como salir del armario", "LGBTQI+", "Fantasías sexuales", 5));
-        libros.add(new Libro("1-06", "Las claves del amor", "Arturito", "Psicologia Amorosa", 5));
-        libros.add(new Libro("1-07", "Don Quijote de la Mancha", "Miguel de Cervantes", "Clásico", 4));
-        libros.add(new Libro("1-08", "Crimen y castigo", "Fiódor Dostoievski", "Novela psicológica", 3));
-        libros.add(new Libro("1-09", "Orgullo y prejuicio", "Jane Austen", "Romance", 4));
-        libros.add(new Libro("1-10", "El principito", "Antoine de Saint-Exupéry", "Fábula", 6));
-        libros.add(new Libro("1-11", "Rayuela", "Julio Cortázar", "Novela experimental", 2));
-        libros.add(new Libro("1-12", "El código Da Vinci", "Dan Brown", "Thriller", 5));
-        libros.add(new Libro("1-13", "Crónica de una muerte anunciada", "Gabriel García Márquez", "Novela", 3));
-        libros.add(new Libro("1-14", "El nombre del viento", "Patrick Rothfuss", "Fantasía épica", 4));
-        libros.add(new Libro("1-15", "La sombra del viento", "Carlos Ruiz Zafón", "Misterio", 3));
-        libros.add(new Libro("1-16", "Memorias de una geisha", "Arthur Golden", "Novela histórica", 2));
-        libros.add(new Libro("1-17", "El alquimista", "Paulo Coelho", "Ficción filosófica", 5));
-        libros.add(new Libro("1-18", "Los juegos del hambre", "Suzanne Collins", "Distopía", 4));
-        libros.add(new Libro("1-19", "El perfume", "Patrick Süskind", "Novela histórica", 2));
-        libros.add(new Libro("1-20", "Crónicas marcianas", "Ray Bradbury", "Ciencia ficción", 3));
-        
+    private void cargaDatos() {
+            //random
+            Random rand = new Random();
 
-        // Usuarios
-        usuarios.add(new Usuario("11111111A", "Joseiro", "joseiro@email.com", "123456789"));
-        usuarios.add(new Usuario("22222222B", "Orcrema", "orcrema@email.com", "987654321"));
-        usuarios.add(new Usuario("33333333C", "Lisboa", "lisboa@email.com", "456789123"));
-        usuarios.add(new Usuario("44444444D", "Roces", "roces@email.com", "321987654"));
-        usuarios.add(new Usuario("55555555E", "Pacheco", "pacheco@email.com", "6891111111"));
-        usuarios.add(new Usuario("66666666F", "Carmen", "carmen@email.com", "611222222"));
-        usuarios.add(new Usuario("77777777G", "Roberto", "roberto@email.com", "622333333"));
-        usuarios.add(new Usuario("88888888H", "Elena", "elena@email.com", "633444444"));
-        usuarios.add(new Usuario("99999999I", "Miguel", "miguel@email.com", "644555555"));
-        usuarios.add(new Usuario("10101010J", "Laura", "laura@email.com", "655666666"));
-        usuarios.add(new Usuario("12121212K", "Pablo", "pablo@email.com", "666777777"));
-        usuarios.add(new Usuario("13131313L", "Sofía", "sofia@email.com", "677888888"));
-        usuarios.add(new Usuario("14141414M", "Javier", "javier@email.com", "688999999"));
-        usuarios.add(new Usuario("15151515N", "Ana", "ana@email.com", "699000000"));
-        usuarios.add(new Usuario("16161616O", "Diego", "diego@email.com", "600111111"));
 
-        
-        //prestamos
-        LocalDate hoy = LocalDate.now();
-        prestamos.add(new Prestamo(libros.get(3),usuarios.get(4),hoy,hoy.plusDays(15)));
-        prestamos.add(new Prestamo(libros.get(4),usuarios.get(0),hoy,hoy.plusDays(15)));
-        prestamos.add(new Prestamo(libros.get(0),usuarios.get(1),hoy,hoy.plusDays(15)));
-        prestamos.add(new Prestamo(libros.get(5),usuarios.get(2),hoy,hoy.plusDays(15)));   
-        
-        for (int i = 0; i < 21; i++) { // 21 para llegar a un total de 25 préstamos
-        Libro libroAleatorio = libros.get(rand.nextInt(libros.size()));
-        Usuario usuarioAleatorio = usuarios.get(rand.nextInt(usuarios.size()));
-        LocalDate fechaPrestamo = hoy.minusDays(rand.nextInt(30));
-        LocalDate fechaDevolucion = fechaPrestamo.plusDays(15);
-        
-        prestamos.add(new Prestamo(libroAleatorio, usuarioAleatorio, fechaPrestamo, fechaDevolucion));
+            // Libros
+            libros.add(new Libro("1-01", "El Señor de los Anillos", "J.R.R. Tolkien", "Fantasía", 5));
+            libros.add(new Libro("1-02", "Cien años de soledad", "Gabriel García Márquez", "Realismo mágico", 3));
+            libros.add(new Libro("1-03", "1984", "George Orwell", "Ciencia ficción", 2));
+            libros.add(new Libro("1-04", "La piedra filosofal", "J.K.Rowling", "Fantasía", 2));
+            libros.add(new Libro("1-05", "Como salir del armario", "LGBTQI+", "Fantasías sexuales", 5));
+            libros.add(new Libro("1-06", "Las claves del amor", "Arturito", "Psicologia Amorosa", 5));
+            libros.add(new Libro("1-07", "Don Quijote de la Mancha", "Miguel de Cervantes", "Clásico", 4));
+            libros.add(new Libro("1-08", "Crimen y castigo", "Fiódor Dostoievski", "Novela psicológica", 3));
+            libros.add(new Libro("1-09", "Orgullo y prejuicio", "Jane Austen", "Romance", 4));
+            libros.add(new Libro("1-10", "El principito", "Antoine de Saint-Exupéry", "Fábula", 6));
+            libros.add(new Libro("1-11", "Rayuela", "Julio Cortázar", "Novela experimental", 2));
+            libros.add(new Libro("1-12", "El código Da Vinci", "Dan Brown", "Thriller", 5));
+            libros.add(new Libro("1-13", "Crónica de una muerte anunciada", "Gabriel García Márquez", "Novela", 3));
+            libros.add(new Libro("1-14", "El nombre del viento", "Patrick Rothfuss", "Fantasía épica", 4));
+            libros.add(new Libro("1-15", "La sombra del viento", "Carlos Ruiz Zafón", "Misterio", 3));
+            libros.add(new Libro("1-16", "Memorias de una geisha", "Arthur Golden", "Novela histórica", 2));
+            libros.add(new Libro("1-17", "El alquimista", "Paulo Coelho", "Ficción filosófica", 5));
+            libros.add(new Libro("1-18", "Los juegos del hambre", "Suzanne Collins", "Distopía", 4));
+            libros.add(new Libro("1-19", "El perfume", "Patrick Süskind", "Novela histórica", 2));
+            libros.add(new Libro("1-20", "Crónicas marcianas", "Ray Bradbury", "Ciencia ficción", 3));
+
+
+            // Usuarios
+            usuarios.add(new Usuario("11111111A", "Joseiro", "joseiro@email.com", "123456789"));
+            usuarios.add(new Usuario("22222222B", "Orcrema", "orcrema@email.com", "987654321"));
+            usuarios.add(new Usuario("33333333C", "Lisboa", "lisboa@email.com", "456789123"));
+            usuarios.add(new Usuario("44444444D", "Roces", "roces@email.com", "321987654"));
+            usuarios.add(new Usuario("55555555E", "Pacheco", "pacheco@email.com", "6891111111"));
+            usuarios.add(new Usuario("66666666F", "Carmen", "carmen@email.com", "611222222"));
+            usuarios.add(new Usuario("77777777G", "Roberto", "roberto@email.com", "622333333"));
+            usuarios.add(new Usuario("88888888H", "Elena", "elena@email.com", "633444444"));
+            usuarios.add(new Usuario("99999999I", "Miguel", "miguel@email.com", "644555555"));
+            usuarios.add(new Usuario("10101010J", "Laura", "laura@email.com", "655666666"));
+            usuarios.add(new Usuario("12121212K", "Pablo", "pablo@email.com", "666777777"));
+            usuarios.add(new Usuario("13131313L", "Sofía", "sofia@email.com", "677888888"));
+            usuarios.add(new Usuario("14141414M", "Javier", "javier@email.com", "688999999"));
+            usuarios.add(new Usuario("15151515N", "Ana", "ana@email.com", "699000000"));
+            usuarios.add(new Usuario("16161616O", "Diego", "diego@email.com", "600111111"));
+
+
+            //prestamos
+            LocalDate hoy = LocalDate.now();
+            prestamos.add(new Prestamo(libros.get(3),usuarios.get(4),hoy,hoy.plusDays(15)));
+            prestamos.add(new Prestamo(libros.get(4),usuarios.get(0),hoy,hoy.plusDays(15)));
+            prestamos.add(new Prestamo(libros.get(0),usuarios.get(1),hoy,hoy.plusDays(15)));
+            prestamos.add(new Prestamo(libros.get(5),usuarios.get(2),hoy,hoy.plusDays(15)));   
+
+            for (int i = 0; i < 21; i++) { // 21 para llegar a un total de 25 préstamos
+            Libro libroAleatorio = libros.get(rand.nextInt(libros.size()));
+            Usuario usuarioAleatorio = usuarios.get(rand.nextInt(usuarios.size()));
+            LocalDate fechaPrestamo = hoy.minusDays(rand.nextInt(30));
+            LocalDate fechaDevolucion = fechaPrestamo.plusDays(15);
+
+            prestamos.add(new Prestamo(libroAleatorio, usuarioAleatorio, fechaPrestamo, fechaDevolucion));
+        }
+        }    
+/**
+ * Pide Dni y realiza todas las acciones necesarias
+ * @return dni
+ * @default null
+ */
+    public String solicitaDni(){
+        Scanner sc=new Scanner(System.in);
+        System.out.println("Introduce el Dni del usuario:");
+        String dni=sc.nextLine();
+        int posU = buscaDni(dni);
+        if (posU == -1){
+            usuarioNoEncontrado();
+            return null;
+        } 
+        return dni;
     }
-    }    
+/**
+* Busca usuario con dni
+* @param dni del usuario
+* @return usuarios.get(i)
+* @default -1
+*/    
     public int buscaDni (String dni){
         int pos=-1;
         for (int i = 0; i < usuarios.size(); i++) {
@@ -453,16 +470,12 @@ private void cargaDatos() {
         }
         return pos;
     }
-    public int buscaDniPrest (String dni){
-        int pos=-1;
-        for (int i = 0; i < prestamos.size(); i++) {
-            if(prestamos.get(i).getUsuarioPrest(). getDni().equalsIgnoreCase(dni)){    
-                pos = i;
-                break;                
-            }            
-        }
-        return pos;
-    }
+/**
+ * Busca libro con isbn
+ * @param isbn del libro
+ * @return libro.get(i)
+ * @default -1
+ */
     public int buscaLibro (String isbn){
         int pos=-1;
         for (int i = 0; i < libros.size(); i++) {
@@ -472,17 +485,11 @@ private void cargaDatos() {
             }            
         }
         return pos;
-    }
-    public int buscaLibroPrest (String isbn){
-        int pos=-1;
-        for (int i = 0; i < libros.size(); i++) {
-            if(prestamos.get(i).getLibroPrest().getIsbn().equalsIgnoreCase(isbn)){
-                pos = i;
-                break;                
-            }            
-        }
-        return pos;
-    }
+    }    
+/**
+ * Da la opcion de crear un usuario al no ser encontrado
+ * 
+ */
     private void usuarioNoEncontrado() {
     Scanner sc = new Scanner(System.in);
     String opcion;
@@ -505,28 +512,76 @@ private void cargaDatos() {
         }
     } while (true); // Sigue pidiendo una opción válida hasta que sea "SI" o "NO"
 }
-    public String solicitaDni(){
-        Scanner sc=new Scanner(System.in);
-        System.out.println("Introduce el Dni del usuario:");
-        String dni=sc.nextLine();
-        int posU = buscaDni(dni);
-        if (posU == -1){
-            usuarioNoEncontrado();
-            return null;
-        } 
-        return dni;
-    }
+/**
+ * Da la opcion de crear un usuario al no ser encontrado
+ * 
+ */
+    private void isbnNoEncontrado() {
+    Scanner sc = new Scanner(System.in);
+    String opcion;
+
+    System.out.println("El isbn introducido no está registrado en el programa.");
+    do {
+        System.out.println("¿Desea registrar el libro en nuestro programa? (SI/NO)");
+        opcion = sc.nextLine().toUpperCase();
+
+        switch (opcion) {
+            case "SI":
+                altaLibro();
+                return; // Salimos del método después de registrar al usuario
+            case "NO":
+                System.out.println("No se realizará ninguna acción.");
+                estatus = false;
+                return; // Salimos del método sin hacer nada
+            default:
+                System.out.println("Por favor, introduzca una opción válida (SI/NO).");
+        }
+    } while (true); // Sigue pidiendo una opción válida hasta que sea "SI" o "NO"
+}
+/**
+ * Pide Isbn y realiza todas las acciones necesarias
+ * @return 
+ * @default null
+ */
     public String solicitaIsbn(){
         Scanner sc=new Scanner(System.in);
         System.out.println("Introduce el Isbn del libro:");
         String isbn=sc.nextLine();
         int posL = buscaLibro(isbn);
         if (posL == -1){
-            System.out.println("El isbn no corresponde a ningun libro...");
-            isbn = "not found";
+            isbnNoEncontrado();
+            return null;
         } 
         return isbn;
+    } 
+/**
+ * En este metodo pedimos Dni e Isbn para buscar en prestamos
+ * @return Objeto Prestamo
+ * @default null
+ */
+    public Prestamo buscarPrestamo(){
+        Scanner sc=new Scanner(System.in);
+        Prestamo prestamoEncontrado = null;
+        String dni = solicitaDni();
+        if (dni == null) {
+            return prestamoEncontrado;
+        }
+        String isbn = solicitaIsbn();
+        
+        
+        
+        for (Prestamo prestamo : prestamos) {
+        if (prestamo.getUsuarioPrest().getDni().equals(dni) && 
+            prestamo.getLibroPrest().getIsbn().equals(isbn)) {
+            prestamoEncontrado = prestamo;
+            break;
+            } 
+        } 
+        
+        return prestamoEncontrado;
     }
+
+    
     public Map<Libro, Integer> contarLibros(){
         Map<Libro, Integer> prestamosPorLibro = new HashMap<>();
 
