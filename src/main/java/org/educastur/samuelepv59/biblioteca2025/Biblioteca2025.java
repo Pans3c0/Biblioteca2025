@@ -7,11 +7,6 @@ package org.educastur.samuelepv59.biblioteca2025;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -25,6 +20,7 @@ public class Biblioteca2025 {
     private ArrayList<Libro>libros;
     private ArrayList<Usuario>usuarios;
     private ArrayList<Prestamo>prestamos;
+    private ArrayList<Prestamo>prestamosHist;
     
     
     private boolean estatus = true;
@@ -34,6 +30,7 @@ public class Biblioteca2025 {
         this.libros = new ArrayList();
         this.usuarios = new ArrayList();
         this.prestamos = new ArrayList();
+        this.prestamosHist = new ArrayList();
         
     }
     public static void main(String[] args) {
@@ -73,7 +70,7 @@ public class Biblioteca2025 {
                     break;
                 }
                 case 4:{
-                    menuFiltros();
+                    menuExtras();
                     break;
                 }
             }
@@ -161,7 +158,8 @@ public class Biblioteca2025 {
         System.out.println("\t\t\t1. Nuevo Prestamo");
         System.out.println("\t\t\t2. Devolver Un Prestamo");
         System.out.println("\t\t\t3. Prorrogar Un Prestamo");
-        System.out.println("\t\t\t4. Listar Un Prestamo");
+        System.out.println("\t\t\t4. Listar Hisotiral De Prestamos");
+        System.out.println("\t\t\t5. Listar Prestamos Activos");
         System.out.println("\n\n\t\t\t0. Volver al menu principal");
         System.out.print("Seleccione una opcion: ");
         opcion = sc.nextInt();
@@ -180,6 +178,9 @@ public class Biblioteca2025 {
             case 4:
                 listarPrestamos();
                 break;
+            case 5:
+                listarPrestamosActivos();
+                break;
             case 0:
                 System.out.println("\n\nVolviendo al menu principal...\n");
                 break;
@@ -191,16 +192,16 @@ public class Biblioteca2025 {
     
      
 }
-    public void menuFiltros() {
+    public void menuExtras() {
         Scanner sc = new Scanner(System.in);
         int opcion;
 
         do {
-            System.out.println("\nSubmenu: Filtros");
-            System.out.println("\t\t\t1. PlibroMasPrestado");
-            System.out.println("\t\t\t2. usuarioMasActivo");
-            System.out.println("\t\t\t3. librosActivos");
-            System.out.println("\t\t\t4. prestamosActivos");
+            System.out.println("\nSubmenu: Extras");
+            System.out.println("\t\t\t1. Libros Prestados");
+            System.out.println("\t\t\t2. Prestamos Activos");
+            System.out.println("\t\t\t3. El Mas Buscado");
+            System.out.println("\t\t\t4. El Mas Buscador");
             System.out.println("\n\n\t\t\t0. Volver al menu principal");
             System.out.print("Seleccione una opcion: ");
             opcion = sc.nextInt();
@@ -208,16 +209,16 @@ public class Biblioteca2025 {
 
             switch (opcion) {
                 case 1:
-                    libroMasPrestado();
-                    break;
-                case 2:
-                    usuarioMasActivo();
-                    break;
-                case 3:
                     librosActivos();
                     break;
-                case 4:
+                case 2:
                     prestamosActivos();
+                    break;
+                case 3:
+                    libroMasPrestado();
+                    break;
+                case 4:
+                    usuarioMasActivo();
                     break;
                 case 0:
                     System.out.println("\n\nVolviendo al menu principal...\n");
@@ -226,6 +227,7 @@ public class Biblioteca2025 {
                     System.out.println("\n\nOpcion no valida. Intente de nuevo.\n");
             }
         } while (opcion != 0);
+        
     }
 //</editor-fold>
     
@@ -334,6 +336,7 @@ public class Biblioteca2025 {
 //</editor-fold>
     
 //<editor-fold defaultstate="collapsed" desc="GESTION PRESTAMOS">
+    
     private void nuevoPrestamo() {
         Scanner sc=new Scanner(System.in);
         System.out.println("Nuevo Prestamo:");
@@ -350,52 +353,52 @@ public class Biblioteca2025 {
             LocalDate hoy = LocalDate.now();
             Prestamo p=new Prestamo(libroEncontrado,usuarioEncontrado,hoy,hoy.plusDays(15));
             prestamos.add(p);
-            libroEncontrado.setEjemplares(libroEncontrado.getEjemplares()-1); 
+            libroEncontrado.setEjemplares(libroEncontrado.getEjemplares()-1);
+            System.out.println("La operacion se ha realizado con exito.\nEl usuario: "+usuarioEncontrado.getNombre()+"\nEl libro: "+libroEncontrado.getTitulo());
             } else if (libroEncontrado.getEjemplares() <= 0){
                 System.out.println("No quedan ejemplares activos en el sistema.");
                 return;
             }
-        } 
-    
-    
-    
-        private void devolverPrestamo() {
+        }    
+    private void devolverPrestamo() {
         Prestamo prestamoADevolver = buscarPrestamo();
         
         // Si no hay prestamos a devolver cerramos metodo.
         if (prestamoADevolver == null){
             return;
         }
-        
+        prestamosHist.add(prestamoADevolver);
         // Actualizamos la fecha del prestamo.
         prestamoADevolver.setFechaDev(LocalDate.now());
         
         // Añadimos un ejemplar a la lista de libros.
         Libro libro = prestamoADevolver.getLibroPrest();
         libro.setEjemplares(libro.getEjemplares()+1);
+        prestamos.remove(prestamoADevolver);
         
         System.out.println("Se ha devuelto el libro con exito.\nTitulo: "+libro.getTitulo()+".\nFecha de devolucion: "+prestamoADevolver.getFechaDev());
           
     }
-    
-        
-    
-      
     private void prorrogarPrestamo() {
         Prestamo prestamoEncontrado = buscarPrestamo();
         if (prestamoEncontrado == null){
             return;
         }
         prestamoEncontrado.setFechaDev(LocalDate.now().plusDays(15));
+        prestamoEncontrado.setFechaPrest(LocalDate.now());
         System.out.println("El prestamo se ha prorrogado con exito.\nEl libro: "+prestamoEncontrado.getLibroPrest().getTitulo()+".\nNueva fecha de devolucion: "+prestamoEncontrado.getFechaPrest());
     }
-    
-    
-    private void listarPrestamos() {
-        System.out.println();
+    private void listarPrestamosActivos(){
+        System.out.println("Prestamos Activos:");
         for (Prestamo p : prestamos) {
             System.out.println(p);
-        }    
+        }
+    }
+    private void listarPrestamos() {
+        System.out.println("Historial de prestamos:");
+        for(Prestamo p : prestamosHist){
+            System.out.println(p);
+        }
     }    
 //</editor-fold>
     
@@ -449,8 +452,8 @@ public class Biblioteca2025 {
             //prestamos
             LocalDate hoy = LocalDate.now();
             LocalDate apertura = LocalDate.of(2024, Month.NOVEMBER, 02);
-            prestamos.add(new Prestamo(libros.get(3),usuarios.get(4),apertura ,apertura.plusDays(12)));
-            prestamos.add(new Prestamo(libros.get(4),usuarios.get(0),apertura,apertura.plusDays(15)));
+            prestamos.add(new Prestamo(libros.get(3),usuarios.get(4),hoy ,hoy.plusDays(12)));
+            prestamos.add(new Prestamo(libros.get(4),usuarios.get(0),hoy,hoy.plusDays(15)));
             prestamos.add(new Prestamo(libros.get(0),usuarios.get(1),apertura,apertura.plusDays(15)));
             prestamos.add(new Prestamo(libros.get(5),usuarios.get(2),apertura,apertura.plusDays(15)));   
 
@@ -460,7 +463,7 @@ public class Biblioteca2025 {
             LocalDate fechaPrestamo = hoy.minusDays(rand.nextInt(30));
             LocalDate fechaDevolucion = fechaPrestamo.plusDays(rand.nextInt(13));
 
-            prestamos.add(new Prestamo(libroAleatorio, usuarioAleatorio, fechaPrestamo, fechaDevolucion));
+            prestamosHist.add(new Prestamo(libroAleatorio, usuarioAleatorio, fechaPrestamo, fechaDevolucion));
         }
         }    
 /**
@@ -612,54 +615,12 @@ public class Biblioteca2025 {
         
         return prestamoEncontrado;
     }
-
-    
-    public Map<Libro, Integer> contarLibros(){
-        Map<Libro, Integer> prestamosPorLibro = new HashMap<>();
-
-        for (Prestamo prestamo : prestamos) {
-            Libro libro = prestamo.getLibroPrest();
-            prestamosPorLibro.put(libro, prestamosPorLibro.getOrDefault(libro, 0) + 1);
-        }
-        return prestamosPorLibro;
-    }
 //</editor-fold>
-
     
-//<editor-fold defaultstate="collapsed" desc="Filtros">
-    public void numeroPrestamos(){
-        Map<Libro, Integer> prestamosPorLibro = contarLibros();
-        System.out.println("Número de préstamos por libro:");
-        for (Map.Entry<Libro, Integer> entry : prestamosPorLibro.entrySet()) {
-            Libro libro = entry.getKey();
-            int numeroPrestamos = entry.getValue();
-            if (numeroPrestamos > 0){
-                System.out.println(libro.getTitulo() + " - ISBN: " + libro.getIsbn() + ": " + numeroPrestamos + " préstamo(s)");
-            }
-        }
-    }
-    public void mayorFiltroPrestamos() {
-        Map<Libro, Integer> prestamosPorLibro = contarLibros();
-
-        // Convertir el Map a una lista de entradas
-        List<Map.Entry<Libro, Integer>> listaOrdenada = new ArrayList<>(prestamosPorLibro.entrySet());
-
-        // Ordenar la lista
-        Collections.sort(listaOrdenada, new Comparator<Map.Entry<Libro, Integer>>() {
-            @Override
-            public int compare(Map.Entry<Libro, Integer> e1, Map.Entry<Libro, Integer> e2) {
-                return e2.getValue().compareTo(e1.getValue()); // Orden descendente
-            }
-        });
-
-        // Mostrar los resultados ordenados
-        System.out.println("Número de préstamos por libro (ordenado de mayor a menor):");
-        for (Map.Entry<Libro, Integer> entry : listaOrdenada) {
-            Libro libro = entry.getKey();
-            int numeroPrestamos = entry.getValue();
-            System.out.println(numeroPrestamos + "prestamo(s): " + libro.getTitulo()+" "+ libro.getIsbn());
-        }
-    } 
+//<editor-fold defaultstate="collapsed" desc="Extras">
+    /**
+     * Nos muestra todos los prestamos que estan a nombre de un usuario que le demos
+     */
     public void prestamosActivos(){
         Scanner sc=new Scanner(System.in);
         int contador = 0;
@@ -669,7 +630,7 @@ public class Biblioteca2025 {
             return;
         }
         for (Prestamo prestamo : prestamos) {
-            if (usuarioEncontrado == prestamo.getUsuarioPrest() && prestamo.getFechaDev().isAfter(hoy)){    
+            if (usuarioEncontrado == prestamo.getUsuarioPrest()){    
             System.out.println(prestamo);
             contador++;
         }    
@@ -679,6 +640,11 @@ public class Biblioteca2025 {
     } 
         
     }
+    /**
+     * Busa en los prestamos activos cual tiene la fecha de devolucion superior a hoy
+     * @param usuarioEncontrado que deseamos buscar
+     * @return usuario encontrado
+     */
     public boolean prestamoActual(Usuario usuarioEncontrado){
         Scanner sc=new Scanner(System.in);
         boolean status = false;
@@ -693,7 +659,10 @@ public class Biblioteca2025 {
     }
         return status;
     }
-    
+    /**
+     * Nos muestra los prestamos activos que coinciden con un isbn
+     * @param Isbn para buscar el libro
+     */
     public void librosActivos(){
         int contador = 0;
         Scanner sc=new Scanner(System.in);
@@ -714,8 +683,11 @@ public class Biblioteca2025 {
       if (contador == 0 ){
             System.out.println("El libro "+libroEncontrado.getTitulo()+" no se encuentra activo.");
         }  
+      
     }
-    
+    /**
+     * Nos muestra de las dos listas el libro mas prestado
+     */
     public void libroMasPrestado() {
     if (prestamos.isEmpty()) {
         System.out.println("No hay préstamos registrados.");
@@ -735,6 +707,11 @@ public class Biblioteca2025 {
                 contador++;
             }
         }
+        for (Prestamo prestamo : prestamosHist) {
+            if (prestamo.getLibroPrest().equals(libro)) {
+                contador++;
+            }
+        }
 
         // Verificar si este libro tiene más préstamos que el actual máximo
         if (contador > maxPrestamos) {
@@ -750,11 +727,15 @@ public class Biblioteca2025 {
         System.out.println("No se pudo determinar el libro más prestado.");
     }
 }
+    /**
+     * Nos muestra de las dos listas el usuario mas activo
+     */
     public void usuarioMasActivo() {
     if (prestamos.isEmpty()) {
         System.out.println("No hay usuario registrados.");
         return;
     }
+    
 
     // Variables para almacenar el libro más prestado y el número máximo de préstamos
     Usuario usuarioMasActivo = null;
@@ -765,6 +746,11 @@ public class Biblioteca2025 {
 
         // Contar cuántos prestamos ha realizado este usuario
         for (Prestamo prestamo : prestamos) {
+            if (prestamo.getUsuarioPrest().equals(usuario)) {
+                contador++;
+            }
+        }
+        for (Prestamo prestamo : prestamosHist) {
             if (prestamo.getUsuarioPrest().equals(usuario)) {
                 contador++;
             }
@@ -784,14 +770,16 @@ public class Biblioteca2025 {
         System.out.println("No se pudo determinar el usuario mas activo.");
     }
 }
-
+    /**
+     * Comprueba todos los prestamos activos y separa los morosos de los que estan en plazo aun
+     */
     public void SelfControl(){
         int contador = 0;
         Scanner sc=new Scanner(System.in);
         LocalDate hoy = LocalDate.now();
-        System.out.println("Prestamos que van con retraso son:");
+        System.out.println("Prestamos de morosos son:");
         for (Prestamo prestamo : prestamos){
-            if (prestamo.getFechaPrest().isBefore(hoy.minusDays(14)) && prestamo.getFechaDev().isEqual(prestamo.getFechaPrest().plusDays(15))){
+            if (prestamo.getFechaPrest().isBefore(hoy.minusDays(14))){
                 System.out.println(prestamo);
                 contador++;
             }
@@ -799,7 +787,7 @@ public class Biblioteca2025 {
         System.out.println("Se han encontrado en total:"+contador+"\nLos libros activos que aun estan a tiempo y se deben devolver son:");
         contador=0;
         for(Prestamo prestamo : prestamos){
-           if (prestamo.getFechaPrest().isAfter(hoy.minusDays(15)) && prestamo.getFechaDev().isEqual(prestamo.getFechaPrest().plusDays(15))){
+           if (prestamo.getFechaPrest().isAfter(hoy.minusDays(15))){
                 System.out.println(prestamo);
                 contador++;
             }
@@ -807,5 +795,6 @@ public class Biblioteca2025 {
         System.out.println("Se han encontrado en total: "+contador);
 
     }
+    
 //</editor-fold>   
 }
