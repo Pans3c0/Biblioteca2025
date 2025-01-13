@@ -251,7 +251,6 @@ public class Biblioteca2025 {
         Libro l=new Libro(isbn,titulo,autor,genero,ejemplares);
         libros.add(l);    
     }
-
     private void borrarLibro() {
         Scanner sc=new Scanner(System.in);
         System.out.println("Introduce el isbn del libro que deseas eliminar");
@@ -323,7 +322,6 @@ public class Biblioteca2025 {
             System.out.println("El usuario "+usuarioEncontrado.getNombre()+ " ha sido dado de baja con exito");
         }
     }
-    
     private void modificarUsuario() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
@@ -380,11 +378,14 @@ public class Biblioteca2025 {
           
     }
     private void prorrogarPrestamo() {
+        Scanner sc=new Scanner(System.in);
         Prestamo prestamoEncontrado = buscarPrestamo();
         if (prestamoEncontrado == null){
             return;
         }
-        prestamoEncontrado.setFechaDev(LocalDate.now().plusDays(15));
+        System.out.println("Introduce la cantidad de dias que quieres prorrogar el prestamo:");
+        int diasDevolucion = sc.nextInt();
+        prestamoEncontrado.setFechaDev(LocalDate.now().plusDays(diasDevolucion));
         prestamoEncontrado.setFechaPrest(LocalDate.now());
         System.out.println("El prestamo se ha prorrogado con exito.\nEl libro: "+prestamoEncontrado.getLibroPrest().getTitulo()+".\nNueva fecha de devolucion: "+prestamoEncontrado.getFechaPrest());
     }
@@ -618,9 +619,9 @@ public class Biblioteca2025 {
 //</editor-fold>
     
 //<editor-fold defaultstate="collapsed" desc="Extras">
-    /**
-     * Nos muestra todos los prestamos que estan a nombre de un usuario que le demos
-     */
+/**
+* Nos muestra todos los prestamos que estan a nombre de un usuario que le demos
+*/
     public void prestamosActivos(){
         Scanner sc=new Scanner(System.in);
         int contador = 0;
@@ -640,11 +641,11 @@ public class Biblioteca2025 {
     } 
         
     }
-    /**
-     * Busa en los prestamos activos cual tiene la fecha de devolucion superior a hoy
-     * @param usuarioEncontrado que deseamos buscar
-     * @return usuario encontrado
-     */
+/**
+ * Busa en los prestamos activos cual tiene la fecha de devolucion superior a hoy
+ * @param usuarioEncontrado que deseamos buscar
+ * @return usuario encontrado
+ */
     public boolean prestamoActual(Usuario usuarioEncontrado){
         Scanner sc=new Scanner(System.in);
         boolean status = false;
@@ -659,10 +660,10 @@ public class Biblioteca2025 {
     }
         return status;
     }
-    /**
-     * Nos muestra los prestamos activos que coinciden con un isbn
-     * @param Isbn para buscar el libro
-     */
+/**
+ * Nos muestra los prestamos activos que coinciden con un isbn
+ * @param Isbn para buscar el libro
+ */
     public void librosActivos(){
         int contador = 0;
         Scanner sc=new Scanner(System.in);
@@ -685,9 +686,9 @@ public class Biblioteca2025 {
         }  
       
     }
-    /**
-     * Nos muestra de las dos listas el libro mas prestado
-     */
+/**
+ * Nos muestra de las dos listas el libro mas prestado
+ */
     public void libroMasPrestado() {
     if (prestamos.isEmpty()) {
         System.out.println("No hay préstamos registrados.");
@@ -727,9 +728,9 @@ public class Biblioteca2025 {
         System.out.println("No se pudo determinar el libro más prestado.");
     }
 }
-    /**
-     * Nos muestra de las dos listas el usuario mas activo
-     */
+/**
+ * Nos muestra de las dos listas el usuario mas activo
+ */
     public void usuarioMasActivo() {
     if (prestamos.isEmpty()) {
         System.out.println("No hay usuario registrados.");
@@ -770,9 +771,9 @@ public class Biblioteca2025 {
         System.out.println("No se pudo determinar el usuario mas activo.");
     }
 }
-    /**
-     * Comprueba todos los prestamos activos y separa los morosos de los que estan en plazo aun
-     */
+/**
+ * Comprueba todos los prestamos activos y separa los morosos de los que estan en plazo aun
+ */
     public void SelfControl(){
         int contador = 0;
         Scanner sc=new Scanner(System.in);
