@@ -5,6 +5,7 @@
 package org.educastur.samuelepv59.biblioteca2025;
 
 import java.time.LocalDate;
+import java.time.Month;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -38,6 +39,7 @@ public class Biblioteca2025 {
     public static void main(String[] args) {
         Biblioteca2025 b = new Biblioteca2025();
         b.cargaDatos();
+        b.SelfControl();
         b.menu();
         
     }   
@@ -446,16 +448,17 @@ public class Biblioteca2025 {
 
             //prestamos
             LocalDate hoy = LocalDate.now();
-            prestamos.add(new Prestamo(libros.get(3),usuarios.get(4),hoy,hoy.plusDays(15)));
-            prestamos.add(new Prestamo(libros.get(4),usuarios.get(0),hoy,hoy.plusDays(15)));
-            prestamos.add(new Prestamo(libros.get(0),usuarios.get(1),hoy,hoy.plusDays(15)));
-            prestamos.add(new Prestamo(libros.get(5),usuarios.get(2),hoy,hoy.plusDays(15)));   
+            LocalDate apertura = LocalDate.of(2024, Month.NOVEMBER, 02);
+            prestamos.add(new Prestamo(libros.get(3),usuarios.get(4),apertura ,apertura.plusDays(12)));
+            prestamos.add(new Prestamo(libros.get(4),usuarios.get(0),apertura,apertura.plusDays(15)));
+            prestamos.add(new Prestamo(libros.get(0),usuarios.get(1),apertura,apertura.plusDays(15)));
+            prestamos.add(new Prestamo(libros.get(5),usuarios.get(2),apertura,apertura.plusDays(15)));   
 
             for (int i = 0; i < 21; i++) { // 21 para llegar a un total de 25 préstamos
             Libro libroAleatorio = libros.get(rand.nextInt(libros.size()));
             Usuario usuarioAleatorio = usuarios.get(rand.nextInt(usuarios.size()));
             LocalDate fechaPrestamo = hoy.minusDays(rand.nextInt(30));
-            LocalDate fechaDevolucion = fechaPrestamo.plusDays(15);
+            LocalDate fechaDevolucion = fechaPrestamo.plusDays(rand.nextInt(13));
 
             prestamos.add(new Prestamo(libroAleatorio, usuarioAleatorio, fechaPrestamo, fechaDevolucion));
         }
@@ -783,7 +786,26 @@ public class Biblioteca2025 {
 }
 
     public void SelfControl(){
-        
+        int contador = 0;
+        Scanner sc=new Scanner(System.in);
+        LocalDate hoy = LocalDate.now();
+        System.out.println("Prestamos que van con retraso son:");
+        for (Prestamo prestamo : prestamos){
+            if (prestamo.getFechaPrest().isBefore(hoy.minusDays(14)) && prestamo.getFechaDev().isEqual(prestamo.getFechaPrest().plusDays(15))){
+                System.out.println(prestamo);
+                contador++;
+            }
+        }
+        System.out.println("Se han encontrado en total:"+contador+"\nLos libros activos que aun estan a tiempo y se deben devolver son:");
+        contador=0;
+        for(Prestamo prestamo : prestamos){
+           if (prestamo.getFechaPrest().isAfter(hoy.minusDays(15)) && prestamo.getFechaDev().isEqual(prestamo.getFechaPrest().plusDays(15))){
+                System.out.println(prestamo);
+                contador++;
+            }
+        }
+        System.out.println("Se han encontrado en total: "+contador);
+
     }
 //</editor-fold>   
 }
