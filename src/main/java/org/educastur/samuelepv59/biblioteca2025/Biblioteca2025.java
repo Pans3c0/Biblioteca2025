@@ -47,48 +47,44 @@ public class Biblioteca2025 {
         Scanner sc=new Scanner(System.in);
         int opcion;
         do{
-            System.out.println("\n AGENDA 2024"); 
-            System.out.println("\t\t\t\t1 - Libros");
-            System.out.println("\t\t\t\t2 - Usuarios");
-            System.out.println("\t\t\t\t3 - Prestamos");
-            System.out.println("\t\t\t\t4 - Filtros");
-            System.out.println("\n\n\t\t\t\t0 - SALIR\n\n");
+            System.out.println("\n\t\t\t\t *AGENDA 2024*");
+            System.out.println("\t\t\t\t1 - Gestion Usuarios");
+            System.out.println("\t\t\t\t2 - Gestion Libros");
+            System.out.println("\t\t\t\t3 - Gestion Prestamos/Devoluciones");
+            System.out.println("\n\n\t\t\t\t9 - SALIR\n\n");
             opcion=sc.nextInt();
             switch (opcion){
                 case 0:
                 System.out.println("Saliendo del programa...");
                 break;
                 case 1:{
-                    menuLibros();
+                    menuUsuarios();
                     break;
                 }
                 case 2:{
-                    menuUsuarios();
+                    menuLibros();
                     break;
                 }
                 case 3:{
                     menuPrestamos();
                     break;
                 }
-                case 4:{
-                    menuExtras();
-                    break;
-                }
             }
             
-        }while (opcion !=0);
+        }while (opcion !=9);
     }
     public void menuLibros() {
         Scanner sc = new Scanner(System.in);
         int opcion;
 
         do {
-            System.out.println("\nSubmenu: Libros");
-            System.out.println("\t\t\t1. Dar De Alta Libro");
-            System.out.println("\t\t\t2. Eliminar Un Libro");
-            System.out.println("\t\t\t3. Modificar Un Libro");
-            System.out.println("\t\t\t4. Listar Libros");
-            System.out.println("\n\n\t\t\t0. Volver al menu principal");
+            System.out.println("\n\t\t\t*GESTION DE LIBROS*");
+            System.out.println("\t\t\t1. Alta Nuevo Libro");
+            System.out.println("\t\t\t2. Baja De Libro");
+            System.out.println("\t\t\t3. Modificacion Ejemplares De Libro");
+            System.out.println("\t\t\t4. Listar Libros Disponibles");
+            System.out.println("\t\t\t5. Listar Libros ");
+            System.out.println("\n\n\t\t\t9. Volver al menu principal");
             System.out.print("Seleccione una opcion: ");
             opcion = sc.nextInt();
             sc.nextLine(); // Limpiar buffer
@@ -104,6 +100,9 @@ public class Biblioteca2025 {
                     modificarLibro();
                     break;
                 case 4:
+                    //Metodo listar libros disponibles con mas de 0 ejemplares.
+                    break;
+                case 5:
                     listadoLibro();
                     break;
                 case 0:
@@ -112,22 +111,22 @@ public class Biblioteca2025 {
                 default:
                     System.out.println("\n\nOpcion no valida. Intente de nuevo.\n");
             }
-        } while (opcion != 0);
+        } while (opcion != 9);
 }
     public void menuUsuarios() {
     Scanner sc = new Scanner(System.in);
     int opcion;
 
     do {
-        System.out.println("\nSubmenu: Usuarios");
-        System.out.println("\t\t\t1. Alta Usuarios");
-        System.out.println("\t\t\t2. Borrar Usuario ");
-        System.out.println("\t\t\t3. Modificar Usuario ");
-        System.out.println("\t\t\t4. Listado Usuarios");
-        System.out.println("\n\n\t\t\t0. Volver al menu principal");
+        System.out.println("\n\t\t\t*GESTION USUARIOS*");
+        System.out.println("\t\t\t1. Alta Nuevo Usuario/a");
+        System.out.println("\t\t\t2. Baja Usuario/a ");
+        System.out.println("\t\t\t3. Listado Usuarios/as ");
+        System.out.println("\t\t\t4. Modificar Usuario/a");
+        System.out.println("\n\n\t\t\t9. Volver al menu principal");
         System.out.print("Seleccione una opcion: ");
         opcion = sc.nextInt();
-        sc.nextLine(); // Limpiar buffer
+        sc.nextLine();
 
         switch (opcion) {
             case 1:
@@ -137,10 +136,10 @@ public class Biblioteca2025 {
                 borrarUsuario();
                 break;
             case 3:
-                modificarUsuario();
+                listadoUsuarios();
                 break;
             case 4:
-                listadoUsuarios();
+                modificarUsuario();
                 break;
             case 0:
                 System.out.println("\n\nVolviendo al menu anterior...\n");
@@ -148,20 +147,19 @@ public class Biblioteca2025 {
             default:
                 System.out.println("\n\nOpcion no valida. Intente de nuevo.\n");
         }
-    } while (opcion != 0);
+    } while (opcion != 9);
 }
     public void menuPrestamos() {
     Scanner sc = new Scanner(System.in);
     int opcion;
 
     do {
-        System.out.println("\nSubmenu: Prestamos");
-        System.out.println("\t\t\t1. Nuevo Prestamo");
-        System.out.println("\t\t\t2. Devolver Un Prestamo");
-        System.out.println("\t\t\t3. Prorrogar Un Prestamo");
-        System.out.println("\t\t\t4. Listar Hisotiral De Prestamos");
-        System.out.println("\t\t\t5. Listar Prestamos Activos");
-        System.out.println("\n\n\t\t\t0. Volver al menu principal");
+        System.out.println("\n\t\t\t*GESTION PRESTAMOS*");
+        System.out.println("\t\t\t1. Prestamos");
+        System.out.println("\t\t\t2. Devoluciones");
+        System.out.println("\t\t\t3. Prorrogas");
+        System.out.println("\t\t\t4. Gestion De Listados");
+        System.out.println("\n\n\t\t\t9. Volver al menu principal");
         System.out.print("Seleccione una opcion: ");
         opcion = sc.nextInt();
         sc.nextLine(); 
@@ -177,10 +175,13 @@ public class Biblioteca2025 {
                 prorrogarPrestamo();
                 break;
             case 4:
-                listarPrestamos();
+                menuExtras();
                 break;
             case 5:
                 listarPrestamosActivos();
+                break;
+            case 6:
+                // Crear metodo o usarlo que muestre todos los prestamos de las dos listas.
                 break;
             case 0:
                 System.out.println("\n\nVolviendo al menu principal...\n");
@@ -188,7 +189,7 @@ public class Biblioteca2025 {
             default:
                 System.out.println("\n\nOpcion no valida. Intente de nuevo.\n");
         }
-    } while (opcion != 0);
+    } while (opcion != 9);
     
     
      
@@ -198,11 +199,13 @@ public class Biblioteca2025 {
         int opcion;
 
         do {
-            System.out.println("\nSubmenu: Extras");
-            System.out.println("\t\t\t1. Libros Prestados");
-            System.out.println("\t\t\t2. Prestamos Activos");
+            System.out.println("\n\t\t\t*GESTION DE LISTADOS*");
+            System.out.println("\t\t\t1. Prestamos Activos De Un Usuario");
+            System.out.println("\t\t\t2. Prestamos Activos De Un Libro");
             System.out.println("\t\t\t3. El Mas Buscado");
             System.out.println("\t\t\t4. El Mas Buscador");
+            System.out.println("\t\t\t5. Listar Prestamos Activos");
+            System.out.println("\t\t\t6. Listar Todos Activos");
             System.out.println("\n\n\t\t\t0. Volver al menu principal");
             System.out.print("Seleccione una opcion: ");
             opcion = sc.nextInt();
@@ -210,10 +213,10 @@ public class Biblioteca2025 {
 
             switch (opcion) {
                 case 1:
-                    librosActivos();
+                    prestamosActivos();
                     break;
                 case 2:
-                    prestamosActivos();
+                    librosActivos();
                     break;
                 case 3:
                     libroMasPrestado();
@@ -259,7 +262,6 @@ public class Biblioteca2025 {
         libros.add(l);    
     }
     private void borrarLibro() {
-        boolean estatus;
         Scanner sc = new Scanner(System.in);
         Libro libroEncontrado = Buscador.libro();
         if (libroEncontrado == null) {
@@ -282,7 +284,7 @@ public class Biblioteca2025 {
             } while (true);
         }
         libros.remove(libroEncontrado);
-        System.out.println("Libro eliminado con exito");;
+        System.out.println("Libro eliminado con exito");
     }
     private void modificarLibro() {
         Scanner sc=new Scanner(System.in);
@@ -373,40 +375,53 @@ public class Biblioteca2025 {
         if(usuarioEncontrado== null){
             return;
         }
-        ArrayList<Prestamo>deudaUsuario = Buscador.prestamosActivos(usuarioEncontrado);
-        if (deudaUsuario.isEmpty()) {
+        ArrayList<Prestamo>prestamosActivosUsuario = Buscador.prestamosActivos(usuarioEncontrado);
+        if (prestamosActivosUsuario.isEmpty()) {
             System.out.println("El usuario tiene prestamos activos. Operacion cancelada");
         }
         Libro libroEncontrado = compruebaLibroDisponible(Buscador.libro());
         if (libroEncontrado == null){
+            System.out.println("Actualmente no se encuentra este libro disponible.");
             return;
         }
+        if(Buscador.prestamosActivos(usuarioEncontrado)==Buscador.prestamosActivos(libroEncontrado)){
+            System.out.println("Ya hay un prestamo activo con este usario y este libro.");
+            return;
+        }
+        //Añadimos el prestamo en la lista prestamos y pasa a estar activo.
         LocalDate hoy = LocalDate.now();
         Prestamo p=new Prestamo(libroEncontrado,usuarioEncontrado,hoy,hoy.plusDays(15));
         prestamos.add(p);
+        // Restamos un ejemplar del objeto Libro.
         libroEncontrado.setEjemplares(libroEncontrado.getEjemplares()-1);
-        System.out.println("La operacion se ha realizado con exito.\nEl usuario: "+usuarioEncontrado.getNombre()+"\nEl libro: "+libroEncontrado.getTitulo());
+        System.out.println("La operacion se ha realizado con exito.\nEl usuario: "+usuarioEncontrado.getNombre()+"\nEl libro: "+libroEncontrado.getTitulo()+"\nActualmente quedan "+libroEncontrado.getEjemplares()+" ejemplares.");
         }
 
     private void devolverPrestamo() {
 
         ArrayList<Prestamo> prestamosUsuarios = Buscador.prestamosActivos(Buscador.usuario());
-        if (prestamosUsuarios == null){
+        if (prestamosUsuarios.isEmpty()){
             System.out.println("El usuario no tienen ningun prestamo activo.");
             return;
         }
+        if (Buscador.deudas(prestamosUsuarios.getFirst().getUsuarioPrest()).isEmpty()){
+            System.out.println("El usuario tiene una deuda pendiente.");
+        }
         Libro libroEncontrado = Buscador.libro();
+        if (Buscador.deuda(prestamosUsuarios.getFirst().getUsuarioPrest(),libroEncontrado)!=null){
+            System.out.println("Hay una multa pendiente con este libro.");
+            return;
+        }
         for (Prestamo prestamo : prestamosUsuarios){
-            if (prestamo.getLibroPrest().equals(libroEncontrado)&& Buscador.deuda(prestamo.getUsuarioPrest(),prestamo.getLibroPrest()) ==  null){
+            if (prestamo.getLibroPrest().equals(libroEncontrado)){
+                // Desplazamos al objeto de una Array a otro
                 prestamosHist.add(prestamo);
                 prestamos.remove(prestamo);
                 prestamo.setFechaDev(LocalDate.now());
-                System.out.println("Se ha devuelto el libro con exito.\nTitulo: "+prestamo.getLibroPrest().getTitulo()+".\nFecha de devolucion: "+prestamo.getFechaDev());
+                //Aumentamos el numero de ejemplares
                 libroEncontrado.setEjemplares(libroEncontrado.getEjemplares()+1);
+                System.out.println("Se ha devuelto el libro con exito.\nTitulo: "+prestamo.getLibroPrest().getTitulo()+".\nFecha de devolucion: "+prestamo.getFechaDev()+"\nEjemplares: "+prestamo.getLibroPrest().getEjemplares());
             }
-        }
-        if(Comprobar.quitaDeudas(prestamosUsuarios)!=null){
-            System.out.println("Debe primero devolver la deuda.");
         }
     }
     private void prorrogarPrestamo() {
@@ -492,7 +507,7 @@ public class Biblioteca2025 {
 
             //prestamos
             LocalDate hoy = LocalDate.now();
-            LocalDate apertura = LocalDate.of(2024, Month.NOVEMBER, 02);
+            LocalDate apertura = LocalDate.of(2024, Month.NOVEMBER, 2);
             prestamos.add(new Prestamo(libros.get(3),usuarios.get(4),hoy ,hoy.plusDays(12)));
             prestamos.add(new Prestamo(libros.get(4),usuarios.get(0),hoy,hoy.plusDays(15)));
             prestamos.add(new Prestamo(libros.get(0),usuarios.get(1),apertura,apertura.plusDays(15)));
@@ -514,7 +529,6 @@ public class Biblioteca2025 {
  * 
  */
     private void usuarioNoEncontrado() {
-        boolean estatus;
     Scanner sc = new Scanner(System.in);
     String opcion;
 
@@ -529,7 +543,6 @@ public class Biblioteca2025 {
                 return;
             case "NO":
                 System.out.println("No se realizará ninguna acción.");
-                estatus = false;
                 return;
             default:
                 System.out.println("Por favor, introduzca una opción válida (SI/NO).");
@@ -541,7 +554,6 @@ public class Biblioteca2025 {
  * 
  */
     private void isbnNoEncontrado() {
-    boolean estatus;
     Scanner sc = new Scanner(System.in);
     String opcion;
 
@@ -556,13 +568,19 @@ public class Biblioteca2025 {
                 return; // Salimos del método después de registrar al usuario
             case "NO":
                 System.out.println("No se realizará ninguna acción.");
-                estatus = false;
                 return; // Salimos del método sin hacer nada
             default:
                 System.out.println("Por favor, introduzca una opción válida (SI/NO).");
         }
     } while (true); // Sigue pidiendo una opción válida hasta que sea "SI" o "NO"
 }
+
+    /**
+     * Comprueba si esta dispomible
+     * Si no lo esta no devuelve ningun libro.
+     * @param libroEncontrado
+     * @return Libro
+     */
     public Libro compruebaLibroDisponible (Libro libroEncontrado){
         if (libroEncontrado.getEjemplares()-1 >=0) return libroEncontrado;
         return null;
@@ -591,8 +609,7 @@ public class Biblioteca2025 {
 
             int dias = (int) diasTotal;
 
-            Double precio = dias*multaDia;
-            return precio;
+            return dias*multaDia; //Precio de la multa
         } else {
             return null;
         }
@@ -603,7 +620,6 @@ public class Biblioteca2025 {
     }
     public ArrayList<Prestamo> muestraDeudas(ArrayList<Prestamo>prestamos){
         ArrayList<Prestamo>prestamos1 =  new ArrayList<>();
-        LocalDate hoy = LocalDate.now();
         for (Prestamo prestamo : prestamos) {
             if(prestamo.getFechaDev().isBefore(LocalDate.now())) {
                 prestamos1.add(prestamo);
@@ -613,7 +629,6 @@ public class Biblioteca2025 {
     }
     public ArrayList<Prestamo> quitaDeudas(ArrayList<Prestamo>prestamos){
         ArrayList<Prestamo>prestamos1 =  new ArrayList<>();
-        LocalDate hoy = LocalDate.now();
         for (Prestamo prestamo : prestamos) {
             if(prestamo.getFechaDev().isAfter(LocalDate.now().minusDays(1))) {
                 prestamos1.add(prestamo);
@@ -630,8 +645,7 @@ public class Biblioteca2025 {
     public void prestamosActivos() {
         Usuario usuarioEncontrado = Buscador.usuario();
         if (usuarioEncontrado == null) return;
-        ArrayList<Prestamo> prestamos1 = new ArrayList<>();
-        prestamos1 = Buscador.prestamosActivos(usuarioEncontrado);
+        ArrayList<Prestamo> prestamos1 = Buscador.prestamosActivos(usuarioEncontrado);
         if (prestamos1.isEmpty()){
             System.out.printf("No se ha encontrado prestamos activos para " + usuarioEncontrado.getNombre() + " actualmente.");
         return;
@@ -647,8 +661,7 @@ public class Biblioteca2025 {
  */
     public void librosActivos(){
         Libro libroEncontrado = Buscador.libro();
-        ArrayList<Prestamo>prestamosActivosIsbn = new ArrayList<>();
-        prestamosActivosIsbn = Buscador.prestamosActivos(libroEncontrado);
+        ArrayList<Prestamo>prestamosActivosIsbn = Buscador.prestamosActivos(libroEncontrado);
         if (prestamosActivosIsbn.isEmpty()){
             System.out.println("No se han encontrado prestamos activos");
             return;
@@ -789,8 +802,7 @@ public class Biblioteca2025 {
          * default null no se han encontrado deudas.
          */
         public ArrayList<Prestamo> deudas(Usuario usuarioEncontrado){
-            ArrayList<Prestamo> prestamos1 = null;
-            LocalDate hoy = LocalDate.now();
+            ArrayList<Prestamo> prestamos1 = new ArrayList<>();
             for (Prestamo prestamo : prestamos) {
                 if(prestamo.getUsuarioPrest().equals(usuarioEncontrado) && prestamo.getFechaDev().isBefore(LocalDate.now())) {
                     prestamos1.add(prestamo);
@@ -802,13 +814,12 @@ public class Biblioteca2025 {
          * Busca en los prestamos activos cual tiene la fecha de devolucion anterior a hoy
          * @param libroEncontrado que deseamos buscar
          * @return Lista de prestamos encontrados que tiene la deuda
-         * default null no se han encontrado deudas asociadas al libro.
+         * default empty no se han encontrado deudas asociadas al libro.
          */
         public ArrayList<Prestamo> deudas(Libro libroEncontrado){
-            ArrayList<Prestamo> prestamos1 = null;
-            LocalDate hoy = LocalDate.now();
+            ArrayList<Prestamo> prestamos1 = new ArrayList<>();
             for (Prestamo prestamo : prestamos) {
-                if(prestamo.getUsuarioPrest().equals(libroEncontrado) && prestamo.getFechaDev().isBefore(LocalDate.now())) {
+                if(prestamo.getLibroPrest().equals(libroEncontrado) && prestamo.getFechaDev().isBefore(LocalDate.now())) {
                     prestamos1.add(prestamo);
                 }
             }
@@ -818,22 +829,22 @@ public class Biblioteca2025 {
          * Busca en los prestamos activos cual tiene la fecha de devolucion anterior a hoy
          * @param libroEncontrado que deseamos buscar
          * @param usuarioEncontrado que deseamos buscar
-         * @return Lista de prestamos encontrados que tiene la deuda
-         * default null no se han encontrado deudas asociadas al libro.
+         * @return prestamo encontrado que tiene la deuda
+         * default null no se han encontrado deudas asociadas al prestamo.
          */
         public Prestamo deuda(Usuario usuarioEncontrado, Libro libroEncontrado){
+            Prestamo prestamos1 = null;
             for (Prestamo prestamo : prestamos) {
-                if(prestamo.getUsuarioPrest().equals(usuarioEncontrado) && prestamo.getUsuarioPrest().equals(libroEncontrado) && prestamo.getFechaDev().isBefore(LocalDate.now())) {
-                    return prestamo;
+                if(prestamo.getUsuarioPrest().equals(usuarioEncontrado) && prestamo.getLibroPrest().equals(libroEncontrado) && prestamo.getFechaDev().isBefore(LocalDate.now())) {
+                    return prestamos1 = prestamo;
                 }
             }
-            return null;
+            return prestamos1;
         }
         /**
-         * Busca coincidencias en los Prestamos Activos que coinciden.
-         * Si devuelve null no se ha encontrado nada.
+         * Busca coincidencias en los Prestamos Activos que coinciden. Si devuelve empty no se ha encontrado nada.
          * @param usuarioEncontrado Busqueda
-         * default null
+         * default empty
          * @return prestamosActivos nos devuelve Arraylist de prestamos activos.
          */
         public ArrayList<Prestamo> prestamosActivos(Usuario usuarioEncontrado){
