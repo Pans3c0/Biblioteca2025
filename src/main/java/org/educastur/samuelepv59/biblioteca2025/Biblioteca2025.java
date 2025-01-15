@@ -24,9 +24,8 @@ public class Biblioteca2025 {
     private ArrayList<Prestamo>prestamosHist;
     
     public Buscador Buscador = new Buscador();
-    private boolean estatus = true;
     double multaDia = 1.50;
-    public Comprobar Comprobar = new Comprobar();
+    public SelfOut Comprobar = new SelfOut();
     
     public Biblioteca2025(){
         this.libros = new ArrayList();
@@ -38,7 +37,7 @@ public class Biblioteca2025 {
     public static void main(String[] args) {
         Biblioteca2025 b = new Biblioteca2025();
         b.cargaDatos();
-        b.Comprobar.SelfControl();
+        b.Comprobar.checking();
         b.menu();
         
     }   
@@ -46,7 +45,7 @@ public class Biblioteca2025 {
 //<editor-fold defaultstate="collapsed" desc="MENUS">
     private void menu() {
         Scanner sc=new Scanner(System.in);
-        int opcion = 0;
+        int opcion;
         do{
             System.out.println("\n AGENDA 2024"); 
             System.out.println("\t\t\t\t1 - Libros");
@@ -260,6 +259,7 @@ public class Biblioteca2025 {
         libros.add(l);    
     }
     private void borrarLibro() {
+        boolean estatus;
         Scanner sc = new Scanner(System.in);
         Libro libroEncontrado = Buscador.libro();
         if (libroEncontrado == null) {
@@ -272,17 +272,17 @@ public class Biblioteca2025 {
                 String opcion = sc.nextLine().toUpperCase();
                 switch (opcion) {
                     case "SI":
-                        estatus = false;
+                        break;
                     case "NO":
                         System.out.println("No se realizará ninguna acción.");
-                        estatus = false;
                         return;
                     default:
                         System.out.println("Por favor, introduzca una opción válida (SI/NO).");
                 }
             } while (true);
         }
-        prestamos.remove(prestamosEncontrado);
+        libros.remove(libroEncontrado);
+        System.out.println("Libro eliminado con exito");;
     }
     private void modificarLibro() {
         Scanner sc=new Scanner(System.in);
@@ -368,7 +368,6 @@ public class Biblioteca2025 {
 //<editor-fold defaultstate="collapsed" desc="GESTION PRESTAMOS">
     
     private void nuevoPrestamo() {
-        Scanner sc=new Scanner(System.in);
         System.out.println("Nuevo Prestamo:");
         Usuario usuarioEncontrado = Buscador.usuario();
         if(usuarioEncontrado== null){
@@ -408,7 +407,6 @@ public class Biblioteca2025 {
         }
         if(Comprobar.quitaDeudas(prestamosUsuarios)!=null){
             System.out.println("Debe primero devolver la deuda.");
-            return;
         }
     }
     private void prorrogarPrestamo() {
@@ -516,6 +514,7 @@ public class Biblioteca2025 {
  * 
  */
     private void usuarioNoEncontrado() {
+        boolean estatus;
     Scanner sc = new Scanner(System.in);
     String opcion;
 
@@ -542,6 +541,7 @@ public class Biblioteca2025 {
  * 
  */
     private void isbnNoEncontrado() {
+    boolean estatus;
     Scanner sc = new Scanner(System.in);
     String opcion;
 
@@ -568,8 +568,8 @@ public class Biblioteca2025 {
         return null;
     }
 //</editor-fold>
-    public class Comprobar {
-    public void SelfControl(){
+    public class SelfOut {
+    public void checking(){
         System.out.println("Prestamos de morosos son:");
         ArrayList<Prestamo>prestamosMorosos = Comprobar.muestraDeudas(prestamos);
         for (Prestamo prestamo : prestamosMorosos) {
@@ -581,8 +581,7 @@ public class Biblioteca2025 {
         if (prestamosMorosos.isEmpty()&&prestamosSinDeuda.isEmpty()) System.out.println("No se han encontrado ningun prestamo activo.");
     }
     /**
-     * Comprobamos que fechaDev es inferior a LocalDate.now y calculamos en base
-     * a la tarifa el precio de la multa
+     * Comprobamos que fechaDev es inferior a LocalDate.now y calculamos basándonos en la tarifa el precio de la multa
      * @param prestamoEncontrado Prestamo del que queremos hacer una consulta
      * @return precio total de la multa
      */
@@ -756,7 +755,7 @@ public class Biblioteca2025 {
         /**
          * Buscamos en el ArrayList el objeto libre que coincide con el isbn solicitado
           * @return Libro encontrado
-         * @default null no se ha encontrado libro
+         * default null no se ha encontrado libro
          */
        public Libro libro(){
             Scanner sc=new Scanner(System.in);
@@ -773,7 +772,7 @@ public class Biblioteca2025 {
          * Busca en la lista de libros equivalente al isbn
          * @param isbn del libro
          * @return libro encontrado
-         * @default null no se ha encontrado el libro que se necesita.
+         * default null no se ha encontrado el libro que se necesita.
          */
         public Libro isbn (String isbn){
             for (Libro libro: libros){
@@ -787,7 +786,7 @@ public class Biblioteca2025 {
          * Busca en los prestamos activos cual tiene la fecha de devolucion anterior a hoy
          * @param usuarioEncontrado que deseamos buscar
          * @return Lista de prestamos encontrados que tiene la deuda
-         * @default null no se han encontrado deudas.
+         * default null no se han encontrado deudas.
          */
         public ArrayList<Prestamo> deudas(Usuario usuarioEncontrado){
             ArrayList<Prestamo> prestamos1 = null;
@@ -803,7 +802,7 @@ public class Biblioteca2025 {
          * Busca en los prestamos activos cual tiene la fecha de devolucion anterior a hoy
          * @param libroEncontrado que deseamos buscar
          * @return Lista de prestamos encontrados que tiene la deuda
-         * @default null no se han encontrado deudas asociadas al libro.
+         * default null no se han encontrado deudas asociadas al libro.
          */
         public ArrayList<Prestamo> deudas(Libro libroEncontrado){
             ArrayList<Prestamo> prestamos1 = null;
@@ -820,10 +819,9 @@ public class Biblioteca2025 {
          * @param libroEncontrado que deseamos buscar
          * @param usuarioEncontrado que deseamos buscar
          * @return Lista de prestamos encontrados que tiene la deuda
-         * @default null no se han encontrado deudas asociadas al libro.
+         * default null no se han encontrado deudas asociadas al libro.
          */
         public Prestamo deuda(Usuario usuarioEncontrado, Libro libroEncontrado){
-            LocalDate hoy = LocalDate.now();
             for (Prestamo prestamo : prestamos) {
                 if(prestamo.getUsuarioPrest().equals(usuarioEncontrado) && prestamo.getUsuarioPrest().equals(libroEncontrado) && prestamo.getFechaDev().isBefore(LocalDate.now())) {
                     return prestamo;
@@ -835,7 +833,7 @@ public class Biblioteca2025 {
          * Busca coincidencias en los Prestamos Activos que coinciden.
          * Si devuelve null no se ha encontrado nada.
          * @param usuarioEncontrado Busqueda
-         * @default null
+         * default null
          * @return prestamosActivos nos devuelve Arraylist de prestamos activos.
          */
         public ArrayList<Prestamo> prestamosActivos(Usuario usuarioEncontrado){
@@ -851,7 +849,7 @@ public class Biblioteca2025 {
          * Busca coincidencias en los Prestamos Activos que coinciden.
          * Si devuelve null no se ha encontrado nada.
          * @param libroEncontrado Busqueda
-         * @default null
+         * default null
          * @return prestamosActivos nos devuelve Arraylist de prestamos activos.
          */
         public ArrayList<Prestamo> prestamosActivos(Libro libroEncontrado){
@@ -867,7 +865,7 @@ public class Biblioteca2025 {
          * Busca coincidencias en los Prestamos Activos que coinciden.
          * Si devuelve null no se ha encontrado nada.
          * @param libroEncontrado Busqueda
-         * @default null
+         * default null
          * @return prestamosHistorial nos devuelve Arraylist de prestamos en total.
          */
         public ArrayList<Prestamo> prestamosHistorial(Libro libroEncontrado){
@@ -888,7 +886,7 @@ public class Biblioteca2025 {
          * Busca coincidencias en los Prestamos tanto activos como en historial que coinciden.
          * Si devuelve null no se ha encontrado nada.
          * @param usuarioEncontrado Busqueda
-         * @default null
+         * default null
          * @return prestamosHistorial nos devuelve Arraylist de prestamos encontrado en toda la vida del libro.
          */
         public ArrayList<Prestamo> prestamosHistorial(Usuario usuarioEncontrado){
@@ -908,7 +906,7 @@ public class Biblioteca2025 {
         /**
          * Pide Dni y llama al metodo dni para buscar usuario
          * @return Usuario objeto
-         * @default null no se ha encontrado usuario y se ha hecho la llamada a usuarioNoEncontrado
+         * null no se ha encontrado usuario y se ha hecho la llamada a usuarioNoEncontrado
          */
         public Usuario usuario(){
             Scanner sc=new Scanner(System.in);
@@ -924,7 +922,7 @@ public class Biblioteca2025 {
          * Busca usuario con dni
          * @param dni del usuario
          * @return usuario
-         * @default null no se ha encontrado usuario
+         * null no se ha encontrado usuario
          */
         public Usuario dni (String dni){
             for(Usuario usuario : usuarios)
