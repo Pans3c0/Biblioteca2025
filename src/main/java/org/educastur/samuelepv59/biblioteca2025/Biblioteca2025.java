@@ -23,9 +23,11 @@ public class Biblioteca2025 {
     private ArrayList<Prestamo>prestamos;
     private ArrayList<Prestamo>prestamosHist;
     
+    public SelfOut Comprobar = new SelfOut();
+    public Examen Examen = new Examen();
     public Buscador Buscador = new Buscador();
     double multaDia = 1.50;
-    public SelfOut Comprobar = new SelfOut();
+    
     
     public Biblioteca2025(){
         this.libros = new ArrayList();
@@ -130,7 +132,7 @@ public class Biblioteca2025 {
 
         switch (opcion) {
             case 1:
-                altaUsuario();
+                librosSinPrestamo();
                 break;
             case 2:
                 borrarUsuario();
@@ -206,7 +208,7 @@ public class Biblioteca2025 {
             System.out.println("\t\t\t4. El Mas Buscador");
             System.out.println("\t\t\t5. Listar Prestamos Activos");
             System.out.println("\t\t\t6. Listar Todos Activos");
-            System.out.println("\n\n\t\t\t0. Volver al menu principal");
+            System.out.println("\n\n\t\t\t9. Volver al menu principal");
             System.out.print("Seleccione una opcion: ");
             opcion = sc.nextInt();
             sc.nextLine(); 
@@ -230,7 +232,7 @@ public class Biblioteca2025 {
                 default:
                     System.out.println("\n\nOpcion no valida. Intente de nuevo.\n");
             }
-        } while (opcion != 0);
+        } while (opcion != 9);
         
     }
 //</editor-fold>
@@ -944,5 +946,92 @@ public class Biblioteca2025 {
         }
 
 
+    }
+    private void librosSinPrestamo(){
+        ArrayList<Libro> listaLibros = new ArrayList<>();
+        boolean repite = false;
+        for (Libro l : libros){
+            for (Prestamo p: prestamos){
+                if (p.getLibroPrest().equals(l)){
+                    repite = true;
+                }
+            }
+            if (repite == false){
+                listaLibros.add(l);
+            }
+        }
+
+        System.out.println("Estos son los libros que no se han prestado actualmente.\n");
+        
+       for (Libro libro : listaLibros) {
+            System.out.println(libro);
+        }
+         /**
+        librosNoActivos = libros;
+        for (Libro libros :libros){
+            for (Prestamo p : prestamos) {
+                if (p.getLibroPrest().equals(libros)){
+                    librosNoActivos.remove(libros);
+                }
+            }
+            for (Prestamo p : prestamosHist) {
+                if (p.getLibroPrest().equals(libros)){
+                    librosNoActivos.remove(libros);
+                }
+            }
+        }
+        System.out.println("Estos son los libros que no se han prestado nunca.\n");
+        for (Libro l : librosNoActivos){
+            System.out.println(librosNoActivos);
+        }
+
+        */
+    }
+    public class Examen {
+        private void librosSinPrestamo(){
+            ArrayList<Libro>librosNoActivos = libros;
+            for (Libro libros :libros){
+                for (Prestamo p : prestamos) {
+                    if (p.getLibroPrest().equals(libros)){
+                        librosNoActivos.remove(libros);
+                    }
+                }
+            }
+            System.out.println("Estos son los libros que no se han prestado actualmente.\n");
+            for (Libro libro : librosNoActivos) {
+                System.out.println(libro);
+            }
+            librosNoActivos = libros;
+            for (Libro libros :libros){
+                for (Prestamo p : prestamos) {
+                    if (p.getLibroPrest().equals(libros)){
+                        librosNoActivos.remove(libros);
+                    }
+                }
+                for (Prestamo p : prestamosHist) {
+                    if (p.getLibroPrest().equals(libros)){
+                        librosNoActivos.remove(libros);
+                    }
+                }
+            }
+            System.out.println("Estos son los libros que no se han prestado nunca.\n");
+            for (Libro l : librosNoActivos){
+                System.out.println(librosNoActivos);
+            }
+
+            
+        }
+        
+        private void exam2(){
+            
+        }
+        
+        private void exam3(){
+            
+        }
+        
+        private void exam4(){
+            
+        }
     }
 }
