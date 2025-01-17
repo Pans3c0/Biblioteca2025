@@ -4,6 +4,8 @@
 
 package org.educastur.samuelepv59.biblioteca2025;
 
+import org.w3c.dom.ls.LSOutput;
+
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.temporal.ChronoUnit;
@@ -53,6 +55,7 @@ public class Biblioteca2025 {
             System.out.println("\t\t\t\t1 - Gestion Usuarios");
             System.out.println("\t\t\t\t2 - Gestion Libros");
             System.out.println("\t\t\t\t3 - Gestion Prestamos/Devoluciones");
+            System.out.println("\t\t\t\t4 - Prueba Examen");
             System.out.println("\n\n\t\t\t\t9 - SALIR\n\n");
             opcion=sc.nextInt();
             switch (opcion){
@@ -69,6 +72,10 @@ public class Biblioteca2025 {
                 }
                 case 3:{
                     menuPrestamos();
+                    break;
+                }
+                case 4:{
+                    menuExamen();
                     break;
                 }
             }
@@ -129,10 +136,10 @@ public class Biblioteca2025 {
         System.out.print("Seleccione una opcion: ");
         opcion = sc.nextInt();
         sc.nextLine();
-
+// ZONA DE PRUEBAS
         switch (opcion) {
             case 1:
-                librosSinPrestamo();
+                altaUsuario();
                 break;
             case 2:
                 borrarUsuario();
@@ -226,6 +233,8 @@ public class Biblioteca2025 {
                 case 4:
                     usuarioMasActivo();
                     break;
+                case 5:
+                    prestamosActivos();
                 case 0:
                     System.out.println("\n\nVolviendo al menu principal...\n");
                     break;
@@ -235,6 +244,39 @@ public class Biblioteca2025 {
         } while (opcion != 9);
         
     }
+
+    public void menuExamen(){
+        Scanner sc=new Scanner (System.in);
+        int opcion=0;
+        do{
+            System.out.println("\n\n\n\n\n\t\t\t\tBIBLIOTECA\n");
+            System.out.println("\t\t\t\t1 - EXAMEN1");
+            System.out.println("\t\t\t\t2 - EXAMEN2");
+            System.out.println("\t\t\t\t3 - EXAMEN3");
+            System.out.println("\t\t\t\t4 - EXAMEN4");
+            System.out.println("\t\t\t\t9 - SALIR");
+            opcion=sc.nextInt();
+            switch (opcion){
+                case 1:{
+                    Examen.ejercicio1();
+                    break;
+                }
+                case 2:{
+                    Examen.ejercicio2();
+                    break;
+                }
+                case 3:{
+                    Examen.ejercicio3();
+                    break;
+                }
+                case 4:{
+                    Examen.ejercicio4();
+                    break;
+                }
+            }
+        }while (opcion != 9);
+    }
+
 //</editor-fold>
     
 //<editor-fold defaultstate="collapsed" desc="GESTION LIBROS">
@@ -644,7 +686,11 @@ public class Biblioteca2025 {
 /**
 * Nos muestra todos los prestamos que estan a nombre de un usuario que le demos
 */
-    public void prestamosActivos() {
+public void prestamosActivos() {
+
+}
+/**
+public void prestamosActivos() {
         Usuario usuarioEncontrado = Buscador.usuario();
         if (usuarioEncontrado == null) return;
         ArrayList<Prestamo> prestamos1 = Buscador.prestamosActivos(usuarioEncontrado);
@@ -656,7 +702,7 @@ public class Biblioteca2025 {
             System.out.println(prestamo);
         }
     }
-
+*/
 /**
  * Nos muestra los prestamos activos que coinciden con un isbn
  * Devuelve Isbm para buscar el libro
@@ -947,91 +993,114 @@ public class Biblioteca2025 {
 
 
     }
-    private void librosSinPrestamo(){
-        ArrayList<Libro> listaLibros = new ArrayList<>();
-        boolean repite = false;
-        for (Libro l : libros){
-            for (Prestamo p: prestamos){
-                if (p.getLibroPrest().equals(l)){
-                    repite = true;
-                }
-            }
-            if (repite == false){
-                listaLibros.add(l);
-            }
-        }
 
-        System.out.println("Estos son los libros que no se han prestado actualmente.\n");
-        
-       for (Libro libro : listaLibros) {
-            System.out.println(libro);
-        }
-         /**
-        librosNoActivos = libros;
-        for (Libro libros :libros){
-            for (Prestamo p : prestamos) {
-                if (p.getLibroPrest().equals(libros)){
-                    librosNoActivos.remove(libros);
-                }
-            }
-            for (Prestamo p : prestamosHist) {
-                if (p.getLibroPrest().equals(libros)){
-                    librosNoActivos.remove(libros);
-                }
-            }
-        }
-        System.out.println("Estos son los libros que no se han prestado nunca.\n");
-        for (Libro l : librosNoActivos){
-            System.out.println(librosNoActivos);
-        }
-
-        */
-    }
     public class Examen {
-        private void librosSinPrestamo(){
-            ArrayList<Libro>librosNoActivos = libros;
-            for (Libro libros :libros){
-                for (Prestamo p : prestamos) {
-                    if (p.getLibroPrest().equals(libros)){
-                        librosNoActivos.remove(libros);
+        private void ejercicio1(){
+            ArrayList<Libro> listaLibros = new ArrayList<>();
+            boolean repite = false;
+            for (Libro l : libros){
+                for (Prestamo p: prestamos){
+                    if (p.getLibroPrest().equals(l)){
+                        repite = true;
                     }
                 }
-            }
-            System.out.println("Estos son los libros que no se han prestado actualmente.\n");
-            for (Libro libro : librosNoActivos) {
-                System.out.println(libro);
-            }
-            librosNoActivos = libros;
-            for (Libro libros :libros){
-                for (Prestamo p : prestamos) {
-                    if (p.getLibroPrest().equals(libros)){
-                        librosNoActivos.remove(libros);
-                    }
+                if (repite == false){
+                    listaLibros.add(l);
                 }
-                for (Prestamo p : prestamosHist) {
-                    if (p.getLibroPrest().equals(libros)){
-                        librosNoActivos.remove(libros);
-                    }
-                }
-            }
-            System.out.println("Estos son los libros que no se han prestado nunca.\n");
-            for (Libro l : librosNoActivos){
-                System.out.println(librosNoActivos);
+                repite = false;
             }
 
-            
+            System.out.println("Libros ACTUALMENTE no prestados:\n");
+
+            for (Libro l : listaLibros) {
+                System.out.println(l);
+            }
+            for (Libro l : libros){
+                for (Prestamo p: prestamosHist){
+                    if (p.getLibroPrest().equals(l)){
+                        listaLibros.remove(l);
+                    }
+                }
+            }
+
+            System.out.println("Libro NUNCA prestados\n");
+
+            for (Libro l : listaLibros) {
+                System.out.println(l);
+            }
         }
         
-        private void exam2(){
-            
+        private void ejercicio2(){
+            if (prestamos.isEmpty()) {
+                System.out.println("No hay libros en prestamos actualmente.");
+                return;
+            }
+
+
+            // Variables para almacenar el libro más prestado y el número máximo de préstamos
+            ArrayList<Usuario> usuariosActivos = new ArrayList<>();
+            int maxPrestamos = 0;
+
+            for (Usuario usuario : usuarios) { // Recorrer la lista de usuarios
+                int contador = 0;
+
+                // Contar cuántos prestamos ha realizado este usuario
+                for (Prestamo prestamo : prestamos) {
+                    if (prestamo.getUsuarioPrest().equals(usuario)&& contador==0) {
+                        usuariosActivos.add(usuario);
+                        contador = 1;
+                    }
+                }
+                contador=0;
+            }
+            System.out.println("Los usuarios que se encuentran activos son:\n");
+            for (Usuario u : usuariosActivos){
+                System.out.println(u);
+
+            }
+
         }
         
-        private void exam3(){
-            
+        private void ejercicio3(){
+            Scanner sc = new Scanner(System.in);
+            ArrayList <Prestamo> prestamosAño = new ArrayList<>();
+            Usuario usuarioEncontrado = Buscador.usuario();
+            if (usuarioEncontrado == null){
+                return;
+            }
+            System.out.println("Introduce el año que deseas buscar:\n");
+            int año = sc.nextInt();
+            for (Prestamo p : prestamosHist){
+                if (p.getUsuarioPrest().equals(usuarioEncontrado)&&p.getFechaPrest().getYear()==año){
+                    prestamosAño.add(p);
+                }
+            }
+            if (prestamosAño.isEmpty()){
+                System.out.println("No se han encontrado prestamos.");
+                return;
+            }
+            System.out.println("Los prestamos que se efectuo en el año "+año+" :");
+            for (Prestamo p : prestamosAño){
+                System.out.println(p);
+            }
         }
         
-        private void exam4(){
-            
+        private void ejercicio4(){
+            // Variable año indica de donde empieza el listado.
+            for (int año= 2022;año<=LocalDate.now().getYear();año++){
+                int contador = 0;
+                System.out.println("PRESTAMOS AÑO: "+año);
+                for (Prestamo p : prestamosHist){
+
+                    if (p.getFechaPrest().getYear()==año){
+                        System.out.println(p);
+                        contador++;
+                    }
+                }
+                System.out.println("El total de préstamos en 2024 es: "+contador);
+
+            }
+
         }
     }
 }
