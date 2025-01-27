@@ -4,7 +4,7 @@ package org.educastur.samuelepv59.biblioteca2025;
  *
  * @author pans3c0
  */
-public class Libro {
+public class Libro implements Seriezable {
     private String isbn;
     private String titulo;
     private String autor;

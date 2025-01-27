@@ -4,7 +4,7 @@ package org.educastur.samuelepv59.biblioteca2025;
  *
  * @author pans3c0
  */
-public class Usuario {
+public class Usuario implements Seriezable {
     private String dni;
     private String nombre;
     private String email;

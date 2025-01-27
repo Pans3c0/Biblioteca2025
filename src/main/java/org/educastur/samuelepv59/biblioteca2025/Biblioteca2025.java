@@ -4,19 +4,20 @@
 
 package org.educastur.samuelepv59.biblioteca2025;
 
-import org.w3c.dom.ls.LSOutput;
 
 import java.time.LocalDate;
-import java.time.Month;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Random;
 import java.util.Scanner;
+
+import org.educastur.samuelepv59.biblioteca2025.Excepciones;
+import org.educastur.samuelepv59.biblioteca2025.Excepciones.LibroNoExiste;
 
 /**
  *
  * @author alu19d
  */
+
 public class Biblioteca2025 {
     
     
@@ -109,6 +110,7 @@ public class Biblioteca2025 {
                     modificarLibro();
                     break;
                 case 4:
+                    librosActivos();
                     //Metodo listar libros disponibles con mas de 0 ejemplares.
                     break;
                 case 5:
@@ -285,25 +287,29 @@ public class Biblioteca2025 {
         System.out.println("Nuevo Libro:");
         System.out.println("Isbn: ");
         String isbn=sc.nextLine();
-        Libro libroEncontrado = (Buscador.libro());
-        if (libroEncontrado != null){
-            System.out.println("El libro que deseas añadir ya existe. Modifica su numero de ejemplares.\n"+libroEncontrado.getIsbn());
+        try {
+            Buscador.isbn(isbn);
+            System.out.println("El libro que deseas añadir ya existe. Modifica su numero de ejemplares.\n"+Buscador.isbn(isbn).getIsbn());
             modificarLibro();
+            sc.close();
             return;
+        } catch (LibroNoExiste e){
+            System.out.println("Titulo: ");
+            String titulo=sc.nextLine();
+            System.out.println("Autor: (OPCIONAL) ");
+            String autor=sc.nextLine();
+            if (autor.isEmpty()){
+                autor=null;
+            }
+            System.out.println("Genero: ");
+            String genero=sc.nextLine();
+            System.out.println("Numero Ejemplares: ");
+            int ejemplares=sc.nextInt();
+            Libro l=new Libro(isbn,titulo,autor,genero,ejemplares);
+            libros.add(l); 
         }
-        System.out.println("Titulo: ");
-        String titulo=sc.nextLine();
-        System.out.println("Autor: (OPCIONAL) ");
-        String autor=sc.nextLine();
-        if (autor.isEmpty()){
-            autor=null;
-        }
-        System.out.println("Genero: ");
-        String genero=sc.nextLine();
-        System.out.println("Numero Ejemplares: ");
-        int ejemplares=sc.nextInt();
-        Libro l=new Libro(isbn,titulo,autor,genero,ejemplares);
-        libros.add(l);    
+       
+           
     }
     private void borrarLibro() {
         Scanner sc = new Scanner(System.in);
@@ -367,7 +373,7 @@ public class Biblioteca2025 {
         System.out.println("Nuevo Usuario:");
         System.out.println("DNI: ");
         String dni=sc.nextLine();
-        if (Buscador.usuario() != null){
+        if (Buscador.dni(dni) != null){
             System.out.println("El usuario ya se encuentra registrado.");
             return;
         }
@@ -420,10 +426,11 @@ public class Biblioteca2025 {
             return;
         }
         ArrayList<Prestamo>prestamosActivosUsuario = Buscador.prestamosActivos(usuarioEncontrado);
-        if (prestamosActivosUsuario.isEmpty()) {
+        if (prestamosActivosUsuario != null) {
             System.out.println("El usuario tiene prestamos activos. Operacion cancelada");
+            return;
         }
-        Libro libroEncontrado = compruebaLibroDisponible(Buscador.libro());
+        Libro libroEncontrado = Comprobar.libroDisponibilidad(Buscador.libro());
         if (libroEncontrado == null){
             System.out.println("Actualmente no se encuentra este libro disponible.");
             return;
@@ -473,7 +480,9 @@ public class Biblioteca2025 {
         ArrayList <Prestamo> prestamos1 = Buscador.prestamosActivos(Buscador.libro());
         if(prestamos1 ==null){
             System.out.println("No se encuentran prestamos activos asociados a dicho isbn");
+            sc.close();
             return;
+            
         }
         Usuario usuarioEncontrado = Buscador.usuario();
         System.out.println("Introduce la cantidad de dias que quieres prorrogar el prestamo:");
@@ -487,6 +496,7 @@ public class Biblioteca2025 {
 
         }
         System.out.println("A nombre de; "+usuarioEncontrado.getNombre());
+        sc.close();
     }
     private void listarPrestamosActivos(){
         System.out.println("Prestamos Activos:");
@@ -494,7 +504,7 @@ public class Biblioteca2025 {
             System.out.println(p);
         }
     }
-    private void listarPrestamos() {
+    private void listarPrestamosHistorial() {
         System.out.println("Historial de prestamos:");
         for(Prestamo p : prestamosHist){
             System.out.println(p);
@@ -503,69 +513,49 @@ public class Biblioteca2025 {
 //</editor-fold>
     
 //<editor-fold defaultstate="collapsed" desc="METODOS AUXILIARES">
-    private void cargaDatos() {
-            //random
-            Random rand = new Random();
+public void cargaDatos(){
 
+    libros.add(new Libro("1-00","El Hobbit","JRR Tolkien","Aventuras",3));
+    libros.add(new Libro("1-11","El Silmarillon","JRR Tolkien","Aventuras",3));
+    libros.add(new Libro("1-22","El Medico","N. Gordon","Aventuras",4));
+    libros.add(new Libro("1-33","Chaman","N. Gordon","Aventuras",3));
+    libros.add(new Libro("1-44","Momo","M. Ende","Aventuras",2));
+    libros.add(new Libro("1-55","Paraiso inhabitado","A.M.Matute","Aventuras",2));
+    libros.add(new Libro("1-66","Olvidado Rey Gudu","A.M.Matute","Aventuras",2));
+    libros.add(new Libro("1-77","El ultimo barco","D.Villar","Novela Negra",3));
+    libros.add(new Libro("1-88","Ojos de agua","D.Villar","Novela Negra",9));
 
-            // Libros
-            libros.add(new Libro("1-01", "El Señor de los Anillos", "J.R.R. Tolkien", "Fantasía", 5));
-            libros.add(new Libro("1-02", "Cien años de soledad", "Gabriel García Márquez", "Realismo mágico", 3));
-            libros.add(new Libro("1-03", "1984", "George Orwell", "Ciencia ficción", 2));
-            libros.add(new Libro("1-04", "La piedra filosofal", "J.K.Rowling", "Fantasía", 2));
-            libros.add(new Libro("1-05", "Como salir del armario", "LGBTQI+", "Fantasías sexuales", 5));
-            libros.add(new Libro("1-06", "Las claves del amor", "Arturito", "Psicologia Amorosa", 5));
-            libros.add(new Libro("1-07", "Don Quijote de la Mancha", "Miguel de Cervantes", "Clásico", 4));
-            libros.add(new Libro("1-08", "Crimen y castigo", "Fiódor Dostoievski", "Novela psicológica", 3));
-            libros.add(new Libro("1-09", "Orgullo y prejuicio", "Jane Austen", "Romance", 4));
-            libros.add(new Libro("1-10", "El principito", "Antoine de Saint-Exupéry", "Fábula", 6));
-            libros.add(new Libro("1-11", "Rayuela", "Julio Cortázar", "Novela experimental", 2));
-            libros.add(new Libro("1-12", "El código Da Vinci", "Dan Brown", "Thriller", 5));
-            libros.add(new Libro("1-13", "Crónica de una muerte anunciada", "Gabriel García Márquez", "Novela", 3));
-            libros.add(new Libro("1-14", "El nombre del viento", "Patrick Rothfuss", "Fantasía épica", 4));
-            libros.add(new Libro("1-15", "La sombra del viento", "Carlos Ruiz Zafón", "Misterio", 3));
-            libros.add(new Libro("1-16", "Memorias de una geisha", "Arthur Golden", "Novela histórica", 2));
-            libros.add(new Libro("1-17", "El alquimista", "Paulo Coelho", "Ficción filosófica", 5));
-            libros.add(new Libro("1-18", "Los juegos del hambre", "Suzanne Collins", "Distopía", 4));
-            libros.add(new Libro("1-19", "El perfume", "Patrick Süskind", "Novela histórica", 2));
-            libros.add(new Libro("1-20", "Crónicas marcianas", "Ray Bradbury", "Ciencia ficción", 3));
+    usuarios.add(new Usuario("00","Ana","ana@email.com","621111111"));
+    usuarios.add(new Usuario("11","David","david@email.com","622222222"));
+    usuarios.add(new Usuario("22","Bea","bea@email.com","623333333"));
+    usuarios.add(new Usuario("33","Lucas","lucas@email.com","624444444"));
+    usuarios.add(new Usuario("44","Carlota","carlota@email.com","625555555"));
+    usuarios.add(new Usuario("55","Juan","juan@email.com","626666666"));
 
+    LocalDate hoy= LocalDate.now();
+    prestamos.add(new Prestamo(libros.get(0),usuarios.get(0), hoy.minusDays(20),hoy.minusDays(5)));
+    prestamos.add(new Prestamo(libros.get(0),usuarios.get(0), hoy,hoy.plusDays(15)));
+    prestamos.add(new Prestamo(libros.get(5),usuarios.get(0), hoy,hoy.plusDays(15)));
+    prestamos.add(new Prestamo(libros.get(5),usuarios.get(0), hoy.minusDays(20),hoy.minusDays(5)));
+    prestamos.add(new Prestamo(libros.get(1),usuarios.get(4), hoy.minusDays(20),hoy.minusDays(5)));
+    prestamos.add(new Prestamo(libros.get(2),usuarios.get(4), hoy.minusDays(20),hoy.minusDays(5)));
+    prestamos.add(new Prestamo(libros.get(3),usuarios.get(4), hoy.minusDays(20),hoy.minusDays(5)));
+    prestamos.add(new Prestamo(libros.get(1),usuarios.get(4), hoy,hoy.plusDays(15)));
+    prestamos.add(new Prestamo(libros.get(8),usuarios.get(1), hoy,hoy.plusDays(15)));
 
-            // Usuarios
-            usuarios.add(new Usuario("11111111A", "Joseiro", "joseiro@email.com", "123456789"));
-            usuarios.add(new Usuario("22222222B", "Orcrema", "orcrema@email.com", "987654321"));
-            usuarios.add(new Usuario("33333333C", "Lisboa", "lisboa@email.com", "456789123"));
-            usuarios.add(new Usuario("44444444D", "Roces", "roces@email.com", "321987654"));
-            usuarios.add(new Usuario("55555555E", "Pacheco", "pacheco@email.com", "6891111111"));
-            usuarios.add(new Usuario("66666666F", "Carmen", "carmen@email.com", "611222222"));
-            usuarios.add(new Usuario("77777777G", "Roberto", "roberto@email.com", "622333333"));
-            usuarios.add(new Usuario("88888888H", "Elena", "elena@email.com", "633444444"));
-            usuarios.add(new Usuario("99999999I", "Miguel", "miguel@email.com", "644555555"));
-            usuarios.add(new Usuario("10101010J", "Laura", "laura@email.com", "655666666"));
-            usuarios.add(new Usuario("12121212K", "Pablo", "pablo@email.com", "666777777"));
-            usuarios.add(new Usuario("13131313L", "Sofía", "sofia@email.com", "677888888"));
-            usuarios.add(new Usuario("14141414M", "Javier", "javier@email.com", "688999999"));
-            usuarios.add(new Usuario("15151515N", "Ana", "ana@email.com", "699000000"));
-            usuarios.add(new Usuario("16161616O", "Diego", "diego@email.com", "600111111"));
-
-
-            //prestamos
-            LocalDate hoy = LocalDate.now();
-            LocalDate apertura = LocalDate.of(2024, Month.NOVEMBER, 2);
-            prestamos.add(new Prestamo(libros.get(3),usuarios.get(4),hoy ,hoy.plusDays(12)));
-            prestamos.add(new Prestamo(libros.get(4),usuarios.get(0),hoy,hoy.plusDays(15)));
-            prestamos.add(new Prestamo(libros.get(0),usuarios.get(1),apertura,apertura.plusDays(15)));
-            prestamos.add(new Prestamo(libros.get(5),usuarios.get(2),apertura,apertura.plusDays(15)));   
-
-            for (int i = 0; i < 21; i++) { // 21 para llegar a un total de 25 préstamos
-            Libro libroAleatorio = libros.get(rand.nextInt(libros.size()));
-            Usuario usuarioAleatorio = usuarios.get(rand.nextInt(usuarios.size()));
-            LocalDate fechaPrestamo = hoy.minusDays(rand.nextInt(30));
-            LocalDate fechaDevolucion = fechaPrestamo.plusDays(rand.nextInt(13));
-
-            prestamosHist.add(new Prestamo(libroAleatorio, usuarioAleatorio, fechaPrestamo, fechaDevolucion));
-        }
-        }    
+    prestamosHist.add(new Prestamo(libros.get(0),usuarios.get(0),LocalDate.parse("2023-01-01"),LocalDate.parse("2023-01-20")));//OUT
+    prestamosHist.add(new Prestamo(libros.get(2),usuarios.get(0),LocalDate.parse("2023-02-02"),LocalDate.parse("2023-02-11")));
+    prestamosHist.add(new Prestamo(libros.get(7),usuarios.get(4),LocalDate.parse("2023-10-10"),LocalDate.parse("2023-10-20")));
+    prestamosHist.add(new Prestamo(libros.get(5),usuarios.get(4),LocalDate.parse("2023-11-11"),LocalDate.parse("2023-11-30")));//OUT
+    prestamosHist.add(new Prestamo(libros.get(1),usuarios.get(1),LocalDate.parse("2023-12-12"),LocalDate.parse("2023-12-28")));//OUT
+    prestamosHist.add(new Prestamo(libros.get(7),usuarios.get(2),LocalDate.parse("2024-08-08"),LocalDate.parse("2024-08-18")));
+    prestamosHist.add(new Prestamo(libros.get(6),usuarios.get(3),LocalDate.parse("2024-09-09"),LocalDate.parse("2024-09-19")));
+    prestamosHist.add(new Prestamo(libros.get(0),usuarios.get(0),LocalDate.parse("2024-10-10"),LocalDate.parse("2024-10-30")));//OUT
+    prestamosHist.add(new Prestamo(libros.get(2),usuarios.get(0),LocalDate.parse("2024-11-11"),LocalDate.parse("2024-11-21")));
+    prestamosHist.add(new Prestamo(libros.get(7),usuarios.get(4),LocalDate.parse("2024-12-12"),LocalDate.parse("2024-12-28")));//OUT
+    prestamosHist.add(new Prestamo(libros.get(5),usuarios.get(4),LocalDate.parse("2025-01-01"),LocalDate.parse("2025-01-11")));
+    prestamosHist.add(new Prestamo(libros.get(1),usuarios.get(1),LocalDate.parse("2025-01-01"),LocalDate.parse("2025-01-15")));
+}
 
 
 /**
@@ -619,6 +609,9 @@ public class Biblioteca2025 {
     } while (true); // Sigue pidiendo una opción válida hasta que sea "SI" o "NO"
 }
 
+
+//</editor-fold>
+    public class SelfOut {
     /**
      * Comprueba si esta dispomible
      * Si no lo esta no devuelve ningun libro.
@@ -629,8 +622,6 @@ public class Biblioteca2025 {
         if (libroEncontrado.getEjemplares()-1 >=0) return libroEncontrado;
         return null;
     }
-//</editor-fold>
-    public class SelfOut {
     public void checking(){
         System.out.println("Prestamos de morosos son:");
         ArrayList<Prestamo>prestamosMorosos = Comprobar.muestraDeudas(prestamos);
@@ -708,15 +699,21 @@ public void prestamosActivos() {
  * Devuelve Isbm para buscar el libro
  */
     public void librosActivos(){
-        Libro libroEncontrado = Buscador.libro();
-        ArrayList<Prestamo>prestamosActivosIsbn = Buscador.prestamosActivos(libroEncontrado);
-        if (prestamosActivosIsbn.isEmpty()){
-            System.out.println("No se han encontrado prestamos activos");
+
+        ArrayList<Libro>librosDisponibles = new ArrayList<>();
+
+        for (Libro l:libros){
+            if(Comprobar.compruebaLibroDisponible(l)!=null){
+                librosDisponibles.add(l);
+            }
+        }
+        if (librosDisponibles.isEmpty()){
+            System.out.println("No se han encontrado prestamos disponibles.");
             return;
         }
-        System.out.println("Prestamos Activos Encontrados:");
-        for (Prestamo prestamo: prestamosActivosIsbn){
-            System.out.println(prestamo);
+        System.out.println("Los libros disponibles son:");
+        for (Libro l : librosDisponibles){
+            System.out.println(l);
         }
     }
 /**
@@ -818,30 +815,46 @@ public void prestamosActivos() {
           * @return Libro encontrado
          * default null no se ha encontrado libro
          */
-       public Libro libro(){
+       public Libro libro() throws LibroNoDisponible{
             Scanner sc=new Scanner(System.in);
             System.out.println("Introduce el Isbn del libro:");
-            Libro libroEncontrado = isbn(sc.nextLine());
-            if (libroEncontrado == null){
-                // revisar metodo
-                isbnNoEncontrado();
-                return null;
+            try {
+                Libro libroEncontrado = isbn(sc.nextLine());
+            }catch (LibroNoExiste e){
+                System.out.println(e.getMessage());
             }
-            return libroEncontrado;
+            
+            sc.close();
+            if (libroEncontrado == null){
+                String cadena = "El libro no se encuentra en la biblioteca con referencia ";
+                throw new Excepciones.LibroNoExiste (cadena);
+            }
+            else if (libroEncontrado.getEjemplares() <= 0){
+                String cadena="No hay unidades del libro " + libroEncontrado.getTitulo() +
+                    " disponibles actualmente" 
+                    + "\nFechas de devolución previstas: ";
+                ArrayList <Prestamo> prestamosEncontrados = Buscador.prestamosActivos(libroEncontrado);
+                for (Prestamo p : prestamosEncontrados) {
+                    System.out.println(p.getFechaDev());
+                }
+                throw new Excepciones.LibroNoDisponible(cadena); 
+            } else return libroEncontrado;
+            
+            
         }
         /**
          * Busca en la lista de libros equivalente al isbn
          * @param isbn del libro
          * @return libro encontrado
-         * default null no se ha encontrado el libro que se necesita.
+         * @exception LibroNoExiste 
          */
-        public Libro isbn (String isbn){
-            for (Libro libro: libros){
-                if (libro.getIsbn().equals(isbn)){
-                    return libro;
+        public Libro isbn (String isbn) throws Excepciones.LibroNoExiste {
+            for (Libro l: libros){
+                if (l.getIsbn().equals(isbn)){
+                    return l;
                 }
             }
-            return null;
+            throw new Excepciones.LibroNoExiste("El libro "+isbn+" no existe en nuestra biblioteca ");
         }
         /**
          * Busca en los prestamos activos cual tiene la fecha de devolucion anterior a hoy
@@ -973,8 +986,10 @@ public void prestamosActivos() {
             Usuario usuarioEncontrado = dni(sc.nextLine());
             if (usuarioEncontrado==null){
                 usuarioNoEncontrado();
+                sc.close();
                 return null;
             }
+            sc.close();
             return usuarioEncontrado;
         }
         /**
@@ -1039,7 +1054,6 @@ public void prestamosActivos() {
 
             // Variables para almacenar el libro más prestado y el número máximo de préstamos
             ArrayList<Usuario> usuariosActivos = new ArrayList<>();
-            int maxPrestamos = 0;
 
             for (Usuario usuario : usuarios) { // Recorrer la lista de usuarios
                 int contador = 0;
@@ -1066,6 +1080,7 @@ public void prestamosActivos() {
             ArrayList <Prestamo> prestamosAño = new ArrayList<>();
             Usuario usuarioEncontrado = Buscador.usuario();
             if (usuarioEncontrado == null){
+                sc.close();
                 return;
             }
             System.out.println("Introduce el año que deseas buscar:\n");
@@ -1077,12 +1092,14 @@ public void prestamosActivos() {
             }
             if (prestamosAño.isEmpty()){
                 System.out.println("No se han encontrado prestamos.");
+                sc.close();
                 return;
             }
             System.out.println("Los prestamos que se efectuo en el año "+año+" :");
             for (Prestamo p : prestamosAño){
                 System.out.println(p);
             }
+            sc.close();
         }
         
         private void ejercicio4(){

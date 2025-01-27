@@ -6,7 +6,7 @@ import java.time.LocalDate;
  *
  * @author pans3c0
  */
-public class Prestamo {
+public class Prestamo implements Seriezable {
     private Libro libroPrest;
     private Usuario usuarioPrest;
     private LocalDate fechaPrest;
