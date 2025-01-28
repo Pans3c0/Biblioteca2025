@@ -991,6 +991,10 @@ public void prestamosActivos() {
             return null;
         }
 
+        public void fork (){
+        //Metodo para comprobar como se hacen forks y como se mandan para que las añadan. 
+        }
+
 
     }
 
